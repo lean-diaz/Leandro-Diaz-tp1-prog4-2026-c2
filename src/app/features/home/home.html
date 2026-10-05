@@ -1,0 +1,34 @@
+<p>home works!</p>
+<main class="contenedor-principal">
+    <h1>Cartelera de Cine</h1>
+
+    <section class="grilla-peliculas">
+
+        <!-- El bucle de Angular: Repite esta tarjeta por cada peli en la cartelera -->
+        @for (pelicula of cartelera; track pelicula.id) {
+        
+            <article class="tarjeta">
+                <!-- Binding de atributos: usamos los corchetes [src] para leer la URL desde la base de datos -->
+                <img [src]="pelicula.imagen_url" alt="Poster de la película">
+            
+                <div class="tarjeta-info">
+                
+                <!-- Interpolación: usamos las llaves dobles {{ }} para mostrar texto -->
+                <h2>{{ pelicula.nombre }}</h2>
+                
+                <div class="etiquetas">
+                    <span class="clasificacion">{{ pelicula.clasificacion }}</span>
+                    <span>{{ pelicula.duracion_min }} min</span>
+                </div>
+
+                <p class="sinopsis">{{ pelicula.sinopsis }}</p>
+
+                <button class="btn-comprar" [routerLink]="['/compra', pelicula.id]">
+                    Comprar Entrada
+                </button>
+                </div>
+            </article>
+        
+        }
+    </section>
+</main>

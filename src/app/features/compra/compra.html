@@ -1,0 +1,168 @@
+@if (peliculaSeleccionada()) {
+  <main class="contenedor-compra">
+    
+    <section class="resumen-pelicula">
+      <img [src]="peliculaSeleccionada().imagen_url" alt="Poster">
+      <div class="detalles">
+        <h2>{{ peliculaSeleccionada().nombre }}</h2>
+        <p class="etiqueta">{{ peliculaSeleccionada().clasificacion }} | {{ peliculaSeleccionada().duracion_min }} min</p>
+        <p>{{ peliculaSeleccionada().sinopsis }}</p>
+      </div>
+    </section>
+
+    @switch (pasoActual()) {
+      
+      @case (1) {
+        <section class="panel-seleccion">
+          <h2>Paso 1: Selección de Función</h2>
+          <div class="grilla-funciones">
+            @for (funcion of funciones(); track funcion.id) {
+              <button 
+                class="btn-funcion" 
+                [class.seleccionado]="funcionSeleccionada()?.id === funcion.id"
+                (click)="seleccionarFuncion(funcion)">
+                <div class="hora">{{ funcion.fecha_hora | date:'HH:mm' }}</div>
+                <div class="sala">{{ funcion.salas.nombre }}</div>
+                <!-- Aplicamos el Pipe del precio (ya no hace falta el $) -->
+                <div class="precio">{{ funcion.precio_base | precioArs }}</div>
+              </button>
+            } @empty { 
+              <p>No hay funciones programadas.</p> 
+            }
+          </div>
+
+          @if (funcionSeleccionada()) {
+            <div class="confirmacion-horario">
+              <button class="btn-continuar" (click)="avanzarPaso(2)">Continuar a Butacas</button>
+            </div>
+          }
+        </section>
+      }
+
+      @case (2) {
+        <section class="panel-butacas">
+          <h2>Paso 2: Elegí tus Butacas</h2>
+          <div class="pantalla-cine">PANTALLA</div>
+
+          <div class="mapa-sala">
+             @for (fila of filas; track fila) {
+              <div class="fila-butacas">
+                <span class="letra-fila">{{ fila }}</span>
+
+                @for (asiento of asientos; track asiento) {
+                  <button class="butaca"
+                    [class.seleccionada]="butacasSeleccionadas().includes(fila + asiento)"
+                    [class.ocupada]="butacasOcupadas().includes(fila + asiento)"
+                    [disabled]="butacasOcupadas().includes(fila + asiento)"
+                    [appHighlightButaca]="fila" 
+                    (click)="toggleButaca(fila + asiento)">
+                    {{ asiento }}
+                  </button>
+                }
+
+                <span class="letra-fila">{{ fila }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="resumen-compra">
+            <p>Butacas: <strong>{{ butacasSeleccionadas().join(', ') || 'Ninguna' }}</strong></p>
+            <!-- Aplicamos el Pipe -->
+            <h3>Total parcial: {{ totalPagar() | precioArs }}</h3>
+            <button class="btn-pagar" [disabled]="butacasSeleccionadas().length === 0" (click)="avanzarPaso(3)">
+              Continuar al Candy Bar
+            </button>
+          </div>
+        </section>
+      }
+
+      @case (3) {
+        <section class="panel-candy">
+          <h2>Paso 3: Sumá snacks a tu combo</h2>
+          
+          <div class="grilla-productos">
+            @for (producto of productosCandy(); track producto.id) {
+              <article class="tarjeta-producto">
+                <h4>{{ producto.nombre }}</h4>
+                <p class="categoria">{{ producto.categoria }}</p> 
+                <!-- Aplicamos el Pipe -->
+                <p class="precio">{{ producto.precio | precioArs }}</p>
+                
+                <div class="controles-candy">
+                  <button (click)="quitarDelCandy(producto.id)">-</button>
+                  <span class="cantidad">{{ getCantidadProducto(producto.id) }}</span>
+                  <button (click)="agregarAlCandy(producto)">+</button>
+                </div>
+              </article>
+            }
+          </div>
+
+          <div class="resumen-compra">
+            <!-- Aplicamos el Pipe -->
+            <h3>Total Final: {{ totalPagar() | precioArs }}</h3>
+            <button class="btn-pagar" (click)="avanzarPaso(4)">Ir a Pagar</button>
+          </div>
+        </section>
+      }
+
+      @case (4) {
+        <section class="panel-pago">
+          <h2>Paso 4: Confirmar y Pagar</h2>
+          
+          <div class="contenedor-checkout">
+            <div class="ticket-resumen">
+              <h3>Tu Ticket</h3>
+              <p><strong>Película:</strong> {{ peliculaSeleccionada().nombre }}</p>
+              <p><strong>Horario:</strong> {{ funcionSeleccionada().fecha_hora | date:'dd/MM/yyyy - HH:mm' }} hs</p>
+              <p><strong>Sala:</strong> {{ funcionSeleccionada().salas.nombre }}</p>
+              <hr>
+              <p><strong>Butacas ({{ butacasSeleccionadas().length }}):</strong> {{ butacasSeleccionadas().join(', ') }}</p>
+              <hr>
+              <p><strong>Candy Bar:</strong></p>
+              <ul>
+                @for (item of carritoCandy(); track item.id) {
+                  <!-- Aplicamos el Pipe -->
+                  <li>{{ item.nombre }} ({{ item.precio | precioArs }})</li>
+                } @empty {
+                  <li>Sin productos adicionales</li>
+                }
+              </ul>
+              <hr>
+              <!-- Aplicamos el Pipe -->
+              <h3 class="total-destacado">Total a Pagar: {{ totalPagar() | precioArs }}</h3>
+            </div>
+
+            <div class="formulario-tarjeta">
+              <h3>Datos de Pago</h3>
+              <div class="campo">
+                <label>Titular de la Tarjeta</label>
+                <input type="text" placeholder="LEANDRO DEV">
+              </div>
+              <div class="campo">
+                <label>Número de Tarjeta</label>
+                <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxlength="16">
+              </div>
+              <div class="fila-campos">
+                <div class="campo">
+                  <label>Vencimiento</label>
+                  <input type="text" placeholder="MM/AA" maxlength="5">
+                </div>
+                <div class="campo">
+                  <label>Cód. Seguridad</label>
+                  <input type="text" placeholder="123" maxlength="3">
+                </div>
+              </div>
+              <button class="btn-confirmar-pago" (click)="finalizarCompra()">
+                Efectuar Pago
+              </button>
+            </div>
+          </div>
+        </section>
+      }
+    }
+  </main>
+} @else {
+  <div class="cargando">
+    <h2>Buscando función...</h2>
+  </div>
+}

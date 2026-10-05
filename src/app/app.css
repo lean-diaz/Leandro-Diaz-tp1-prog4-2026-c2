@@ -1,0 +1,72 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #1a1a1a;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e50914; /* Rojo tipo Netflix */
+    text-decoration: none;
+}
+
+.menu-usuario {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.saludo {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.btn-admin {
+    background-color: transparent;
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-admin:hover {
+    background-color: white;
+    color: #1a1a1a;
+}
+
+.btn-login {
+    background-color: #24292e; /* Color oscuro de GitHub */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btn-login:hover {
+    background-color: #000;
+}
+
+.btn-logout {
+    background-color: #dc3545; /* Rojo de salir */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-logout:hover {
+    background-color: #c82333;
+}

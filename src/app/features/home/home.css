@@ -1,0 +1,93 @@
+/* Reseteo básico y tipografía */
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.contenedor-principal {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Magia del Layout: Grilla adaptable */
+.grilla-peliculas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* Diseño individual de la tarjeta */
+.tarjeta {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden; /* Corta las puntas de la imagen para que coincida con el borde redondo */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+
+.tarjeta:hover {
+    transform: translateY(-5px); /* Efecto 3D al pasar el mouse */
+}
+
+.tarjeta img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover; /* Evita que la imagen se deforme o aplaste */
+}
+
+.tarjeta-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Empuja el botón hacia abajo de todo */
+}
+
+.tarjeta-info h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+}
+
+.etiquetas {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #555;
+}
+
+.clasificacion {
+    background-color: #e0e0e0;
+    padding: 4px 8px;
+    border-radius: 10px;
+}
+
+.sinopsis {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.btn-comprar {
+    background-color: #e50914; /* Rojo tipo Netflix */
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-comprar:hover {
+    background-color: #b20710;
+}
