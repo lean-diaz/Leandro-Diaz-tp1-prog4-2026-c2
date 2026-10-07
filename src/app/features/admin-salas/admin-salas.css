@@ -1,0 +1,148 @@
+.admin-container {
+    padding: 1rem;
+    color: white;
+}
+
+h2 {
+    color: #e50914;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #a0a0a0;
+    margin-bottom: 2rem;
+}
+
+/* Leyenda */
+.leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    background-color: #1c1c24;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #2a2a35;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.95rem;
+    color: #ccc;
+}
+
+.asiento-demo {
+    width: 25px;
+    height: 25px;
+    border-radius: 6px 6px 4px 4px;
+}
+
+/* Contenedor del Mapa */
+.sala-container {
+    background-color: #141419;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: auto; /* Por si la pantalla es chica */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* La Pantalla */
+.pantalla {
+    width: 90%;
+    max-width: 600px;
+    height: 45px;
+    background: linear-gradient(to bottom, #555, #222);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #aaa;
+    font-weight: 800;
+    letter-spacing: 10px;
+    margin-bottom: 4rem;
+    box-shadow: 0 -15px 30px rgba(255, 255, 255, 0.05);
+}
+
+/* Grilla de Butacas */
+.grilla-butacas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.fila {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.letra-fila {
+    width: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #777;
+    font-size: 1.1rem;
+}
+
+.asientos {
+    display: flex;
+    gap: 0.4rem;
+}
+
+/* Cada Asiento Individual */
+.asiento {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px 6px 4px 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.asiento:hover {
+    transform: translateY(-3px) scale(1.1);
+}
+
+/* Estilos de Tipos de Asientos generados por [ngClass] */
+.normal {
+    background-color: #2a2a35;
+    color: #aaa;
+    border: 1px solid #444;
+}
+.normal:hover {
+    background-color: #e50914;
+    color: white;
+    border-color: #e50914;
+}
+
+.vip {
+    background-color: #d4af37; /* Dorado */
+    color: #000;
+    border: 1px solid #b5952f;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+.vip:hover {
+    background-color: #f3c93f;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+}
+
+.accesible {
+    background-color: #007bff; /* Azul Accesibilidad */
+    color: white;
+    border: 1px solid #0056b3;
+}
+.accesible:hover {
+    background-color: #3395ff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+}

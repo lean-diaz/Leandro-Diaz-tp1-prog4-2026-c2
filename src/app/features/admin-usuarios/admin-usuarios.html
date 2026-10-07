@@ -1,0 +1,37 @@
+<div class="admin-container">
+    <h2>Gestión de Usuarios</h2>
+    <p class="subtitle">Administrá los permisos de los empleados y clientes.</p>
+    
+    @if (isLoading()) {
+        <div class="loading">Cargando usuarios...</div>
+    } @else {
+        <div class="table-responsive">
+        <table class="tabla-admin">
+            <thead>
+            <tr>
+                <th>Email</th>
+                <th>Fecha de Registro</th>
+                <th>Rol / Permisos</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Recorremos el Signal de usuarios -->
+            @for (u of usuarios(); track u.id) {
+                <tr>
+                <td class="email-cell">{{ u.email || 'Sin correo registrado' }}</td>
+                <td>{{ u.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                    <!-- Si cambiamos la opción, se dispara cambiarRol() -->
+                    <select (change)="cambiarRol(u, $event)" [value]="u.rol" class="select-rol">
+                    <option value="cliente">Cliente</option>
+                    <option value="empleado">Empleado (Lector QR)</option>
+                    <option value="admin">Administrador</option>
+                    </select>
+                </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        </div>
+    }
+</div>

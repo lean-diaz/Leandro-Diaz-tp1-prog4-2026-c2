@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
     selector: 'app-admin',
     standalone: true,
-    template: `
-        <div style="padding: 50px; text-align: center; color: black;">
-            <h1>Panel de Administración</h1>
-            <p>Bienvenido al Backoffice. Si ves esto, el Guard te dejó pasar.</p>
-        </div>
-        `
+    imports: [RouterOutlet, RouterLink, RouterLinkActive], // <- IMPORTANTÍSIMO
+    templateUrl: './admin.html',
+    styleUrls: ['./admin.css']
 })
-
-export class Admin {}
+export class Admin {
+}

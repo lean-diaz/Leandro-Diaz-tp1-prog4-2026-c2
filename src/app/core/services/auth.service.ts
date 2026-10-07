@@ -58,6 +58,24 @@ export class AuthService {
         });
     }
 
+    // --- NUEVAS FUNCIONES DE EMAIL ---
+
+    // 1. Para registrar un usuario nuevo
+    registroConEmail(email: string, password: string) {
+        return this.supabaseService.supabase.auth.signUp({ 
+            email, 
+            password 
+        });
+    }
+
+    // 2. Para iniciar sesión con un usuario existente
+    loginConEmail(email: string, password: string) {
+        return this.supabaseService.supabase.auth.signInWithPassword({ 
+            email, 
+            password 
+        });
+    }
+
     // Destruye el Pase VIP
     logout() {
         return this.supabaseService.supabase.auth.signOut();

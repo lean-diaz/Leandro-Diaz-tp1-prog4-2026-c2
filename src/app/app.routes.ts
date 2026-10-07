@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard'; // Lo dejamos por si a futuro protegés otras rutas
-import { adminGuard } from './core/guards/admin.guard'; // Importamos el NUEVO patovica VIP
+import { adminGuard } from './core/guards/admin.guard'; // Importamos el patovica VIP
 
 export const routes: Routes = [
   // Tu ruta principal (la cartelera) -> Apunta a home.ts y la clase Home
@@ -15,14 +15,46 @@ export const routes: Routes = [
     loadComponent: () => import('./features/compra/compra').then(m => m.Compra) 
   },
 
-  // LA PUERTA SECRETA: La ruta del admin -> Apunta a admin.ts y la clase Admin
+  // LA PUERTA SECRETA: La ruta del admin
   { 
     path: 'admin', 
     loadComponent: () => import('./features/admin/admin').then(m => m.Admin),
-    // ACÁ ESTÁ LA MAGIA: Cambiamos authGuard por adminGuard
+    canActivate: [adminGuard], 
+    children: [
+      { path: '', redirectTo: 'usuarios', pathMatch: 'full' },
+      { 
+        path: 'usuarios', 
+        loadComponent: () => import('./features/admin-usuarios/admin-usuarios').then(m => m.AdminUsuarios) 
+      },
+      // --- LOS 3 COMPONENTES NUEVOS ---
+      { 
+        path: 'peliculas', 
+        loadComponent: () => import('./features/admin-peliculas/admin-peliculas').then(m => m.AdminPeliculas) 
+      },
+      { 
+        path: 'salas', 
+        loadComponent: () => import('./features/admin-salas/admin-salas').then(m => m.AdminSalas) 
+      },
+      { 
+        path: 'funciones', 
+        loadComponent: () => import('./features/admin-funciones/admin-funciones').then(m => m.AdminFunciones) 
+      }
+    ]
+  },
+
+  // NUEVA RUTA: Gestión de Usuarios (Protegida por el adminGuard)
+  { 
+    path: 'admin-usuarios', 
+    loadComponent: () => import('./features/admin-usuarios/admin-usuarios').then(m => m.AdminUsuarios),
     canActivate: [adminGuard] 
   },
 
-  // Si escriben cualquier fruta en la URL, los mandamos al inicio
+  // La ruta del login (sin protección, puede entrar cualquiera)
+  { 
+    path: 'login', 
+    loadComponent: () => import('./features/login/login').then(m => m.Login) 
+  },
+  
+  // Si escriben cualquier fruta en la URL... (SIEMPRE ÚLTIMA)
   { path: '**', redirectTo: '' }
 ];

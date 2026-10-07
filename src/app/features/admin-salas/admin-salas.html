@@ -1,0 +1,40 @@
+<div class="admin-container">
+    <h2>Configuración de la Sala Principal</h2>
+    <p class="subtitle">Capacidad total: {{ filas().length * 15 }} espectadores.</p>
+
+    <!-- Leyenda de colores -->
+    <div class="leyenda">
+        <div class="item"><div class="asiento-demo normal"></div> Normal</div>
+        <div class="item"><div class="asiento-demo vip"></div> VIP (Filas R, S, T)</div>
+        <div class="item"><div class="asiento-demo accesible"></div> Accesible (Filas J, K)</div>
+    </div>
+
+    <!-- El Mapa -->
+    <div class="sala-container">
+        <div class="pantalla">PANTALLA</div>
+
+        <div class="grilla-butacas">
+        <!-- Recorremos cada fila -->
+        @for (fila of filas(); track fila.letra) {
+            <div class="fila">
+                <div class="letra-fila">{{ fila.letra }}</div>
+            
+                <div class="asientos">
+                    <!-- Recorremos cada asiento de esa fila -->
+                    @for (butaca of fila.butacas; track butaca.id) {
+                        <div 
+                            class="asiento"
+                            [ngClass]="butaca.tipo" 
+                            (click)="seleccionarButaca(butaca)"
+                            [title]="'Butaca ' + butaca.id">
+                            {{ butaca.numero }}
+                        </div>
+                    }
+                </div>
+            
+                <div class="letra-fila">{{ fila.letra }}</div>
+            </div>
+        }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+.admin-container {
+    padding: 2rem;
+    color: white;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #e50914;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #a0a0a0;
+    margin-bottom: 2rem;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    background-color: #1c1c24;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.tabla-admin {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tabla-admin th {
+    background-color: #141419;
+    color: #a0a0a0;
+    padding: 1rem;
+    font-size: 0.9rem;
+    border-bottom: 2px solid #2a2a35;
+}
+
+.tabla-admin td {
+    padding: 1rem;
+    border-bottom: 1px solid #2a2a35;
+    vertical-align: middle;
+}
+
+.email-cell {
+    font-weight: bold;
+}
+
+.select-rol {
+    background-color: #141419;
+    color: white;
+    border: 1px solid #333;
+    padding: 0.5rem;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.select-rol:focus {
+    outline: none;
+    border-color: #e50914;
+}
+
+.loading {
+    text-align: center;
+    color: #a0a0a0;
+    padding: 2rem;
+}
