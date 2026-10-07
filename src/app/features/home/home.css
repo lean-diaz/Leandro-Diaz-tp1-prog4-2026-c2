@@ -1,93 +1,82 @@
-/* Reseteo básico y tipografía */
+/* Reseteo básico y tipografía que ya tenías */
 * {
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
 
-.contenedor-principal {
+.home-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 2rem;
 }
 
-h1 {
+.titulo-cartelera {
     text-align: center;
-    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #e50914; /* Rojo cine */
 }
 
-/* Magia del Layout: Grilla adaptable */
-.grilla-peliculas {
+/* LA GRILLA RESPONSIVE */
+.peliculas-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 30px;
+    /* Reducimos el ancho mínimo para que en celulares entren mejor, y fijamos un máximo */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 280px)); 
+    gap: 2rem;
+    justify-content: center; /* Centra las tarjetas si sobran espacios a los costados */
 }
 
-/* Diseño individual de la tarjeta */
-.tarjeta {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 15px;
-    overflow: hidden; /* Corta las puntas de la imagen para que coincida con el borde redondo */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: transform 0.3s ease;
-}
-
-.tarjeta:hover {
-    transform: translateY(-5px); /* Efecto 3D al pasar el mouse */
-}
-
-.tarjeta img {
-    width: 100%;
-    height: 450px;
-    object-fit: cover; /* Evita que la imagen se deforme o aplaste */
-}
-
-.tarjeta-info {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex: 1; /* Empuja el botón hacia abajo de todo */
-}
-
-.tarjeta-info h2 {
-    margin: 0 0 10px 0;
-    font-size: 1.5rem;
-}
-
-.etiquetas {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    font-weight: bold;
-    color: #555;
-}
-
-.clasificacion {
-    background-color: #e0e0e0;
-    padding: 4px 8px;
-    border-radius: 10px;
-}
-
-.sinopsis {
-    color: #666;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    flex: 1;
-}
-
-.btn-comprar {
-    background-color: #e50914; /* Rojo tipo Netflix */
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: bold;
+/* LAS TARJETAS DE PELÍCULAS */
+.pelicula-card {
+    background-color: #1c1c24;
+    border-radius: 12px;
+    overflow: hidden;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    /* Agregamos una sombra base muy sutil */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.btn-comprar:hover {
-    background-color: #b20710;
+/* EFECTO HOVER MÁS DEFINIDO */
+.pelicula-card:hover {
+    transform: translateY(-5px); /* Un salto más sutil */
+    /* Sombra roja más brillante y difuminada */
+    box-shadow: 0 8px 25px rgba(229, 9, 20, 0.5); 
+}
+
+.poster {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3; /* Mantiene la proporción clásica de los pósters */
+    object-fit: cover;
+}
+
+/* EL CONTENEDOR DEL TEXTO */
+.info-peli {
+    padding: 1.2rem 1rem;
+    text-align: center;
+    /* Un degradado sutil de fondo para integrar mejor el texto */
+    background: linear-gradient(to top, #141419, #1c1c24); 
+    /* Aseguramos que el contenedor ocupe el resto del espacio si las imágenes varían */
+    flex-grow: 1; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-peli h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #ffffff;
+    /* Aseguramos que los nombres largos no rompan la tarjeta */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;         /* <--- Agregá solo esta línea y VS Code se calma */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

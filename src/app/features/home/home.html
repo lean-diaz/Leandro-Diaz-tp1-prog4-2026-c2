@@ -1,34 +1,20 @@
-<p>home works!</p>
-<main class="contenedor-principal">
-    <h1>Cartelera de Cine</h1>
+<div class="home-container">
+    <h1 class="titulo-cartelera">Cartelera de Cine</h1>
 
-    <section class="grilla-peliculas">
+    <!-- Grilla Responsive -->
+    <div class="peliculas-grid">
 
-        <!-- El bucle de Angular: Repite esta tarjeta por cada peli en la cartelera -->
+        <!-- El bucle de Angular adaptado a tus variables -->
         @for (pelicula of cartelera; track pelicula.id) {
         
-            <article class="tarjeta">
-                <!-- Binding de atributos: usamos los corchetes [src] para leer la URL desde la base de datos -->
-                <img [src]="pelicula.imagen_url" alt="Poster de la película">
-            
-                <div class="tarjeta-info">
+            <div class="pelicula-card" [routerLink]="['/compra', pelicula.id]">
+                <img [src]="pelicula.imagen_url" [alt]="pelicula.nombre" class="poster">
                 
-                <!-- Interpolación: usamos las llaves dobles {{ }} para mostrar texto -->
-                <h2>{{ pelicula.nombre }}</h2>
-                
-                <div class="etiquetas">
-                    <span class="clasificacion">{{ pelicula.clasificacion }}</span>
-                    <span>{{ pelicula.duracion_min }} min</span>
+                <div class="info-peli">
+                    <h3>{{ pelicula.nombre }}</h3>
                 </div>
-
-                <p class="sinopsis">{{ pelicula.sinopsis }}</p>
-
-                <button class="btn-comprar" [routerLink]="['/compra', pelicula.id]">
-                    Comprar Entrada
-                </button>
-                </div>
-            </article>
+            </div>
         
         }
-    </section>
-</main>
+    </div>
+</div>

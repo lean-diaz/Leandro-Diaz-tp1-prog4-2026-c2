@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard'; // Importamos el patovica
+import { authGuard } from './core/guards/auth.guard'; // Lo dejamos por si a futuro protegés otras rutas
+import { adminGuard } from './core/guards/admin.guard'; // Importamos el NUEVO patovica VIP
 
 export const routes: Routes = [
   // Tu ruta principal (la cartelera) -> Apunta a home.ts y la clase Home
@@ -18,8 +19,8 @@ export const routes: Routes = [
   { 
     path: 'admin', 
     loadComponent: () => import('./features/admin/admin').then(m => m.Admin),
-    // ACÁ ESTÁ LA MAGIA: canActivate
-    canActivate: [authGuard] 
+    // ACÁ ESTÁ LA MAGIA: Cambiamos authGuard por adminGuard
+    canActivate: [adminGuard] 
   },
 
   // Si escriben cualquier fruta en la URL, los mandamos al inicio

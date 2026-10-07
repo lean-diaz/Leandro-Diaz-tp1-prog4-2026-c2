@@ -7,8 +7,10 @@
         @if (auth.session(); as s) {
             <span class="saludo">Hola, {{ s.user.email }}</span>
             
-            <!-- Botón al Backoffice (Próximamente protegido por el Guard) -->
-            <a routerLink="/admin" class="btn-admin">Panel Admin</a>
+            <!-- ACÁ ESTÁ LA MAGIA: Ocultamos solo el botón del admin -->
+            @if (auth.rol() === 'admin') {
+                <a routerLink="/admin" class="btn-admin">Panel Admin</a>
+            }
             
             <!-- Botón para cerrar sesión -->
             <button class="btn-logout" (click)="cerrarSesion()">Salir</button>
