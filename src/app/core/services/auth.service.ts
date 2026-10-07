@@ -51,7 +51,10 @@ export class AuthService {
     // Llama a la ventana de GitHub
     login() {
         return this.supabaseService.supabase.auth.signInWithOAuth({ 
-            provider: 'github' 
+            provider: 'github',
+            options: {
+                redirectTo: window.location.origin // Redirige automáticamente a localhost o a Vercel según dónde estés
+            }
         });
     }
 
