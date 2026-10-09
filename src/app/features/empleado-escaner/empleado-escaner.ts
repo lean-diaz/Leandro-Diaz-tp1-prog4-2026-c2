@@ -1,6 +1,5 @@
-import { Component, signal, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-// Sumamos ScannerQRCodeConfig al import
+import { Component, signal, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { LOAD_WASM, NgxScannerQrcodeComponent, ScannerQRCodeConfig } from 'ngx-scanner-qrcode';
 import { SupabaseService } from '../../core/services/supabase';
 
@@ -17,49 +16,40 @@ export class EmpleadoEscaner {
   ticketEscaneado = signal<any>(null);
   errorMsj = signal<string>('');
   procesando = signal<boolean>(false);
+  camaraError = signal<string>('');
   
-  // NUEVO: Signal para mostrar el error exacto de la cámara
-  camaraError = signal<string>(''); 
+  // EL SALVAVIDAS: Variable para saber si estamos en un navegador real
+  esNavegador = false;
 
-  // NUEVO: Configuración para forzar la cámara trasera en la librería
+  // Forzamos que use la cámara de atrás
   config: ScannerQRCodeConfig = {
     constraints: {
-      video: { facingMode: { ideal: 'environment' } },
-      audio: false
+      video: { facingMode: 'environment' }
     }
   };
 
-  constructor(private supabaseService: SupabaseService) {}
-
-  async encenderCamara() {
-    this.camaraError.set('');
-
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      this.camaraError.set('Tu navegador no permite usar la cámara (Probablemente falte HTTPS o permisos en el sistema).');
-      return;
-    }
-
-    try {
-      // 1. CARGAMOS EL MOTOR ACÁ ADENTRO (Solo cuando tocamos el botón)
+  constructor(
+    private supabaseService: SupabaseService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.esNavegador = isPlatformBrowser(this.platformId);
+    
+    // Solo cargamos el motor de la cámara si estamos en un navegador real (Evita el 504 de Vercel)
+    if (this.esNavegador) {
       LOAD_WASM().subscribe();
-
-      // 2. Pedimos permiso forzado al celular
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
-        audio: false
-      });
-      
-      // 3. Apagamos este video temporal
-      stream.getTracks().forEach(t => t.stop());
-
-      // 4. Encendemos el escáner
-      this.scanner.start();
-    } catch (e: any) {
-      this.camaraError.set(`Fallo la cámara: ${e.name} - ${e.message}`);
     }
   }
 
-  // ... tus métodos onEvent, quemarTicket y volverAEscanear quedan EXACTAMENTE IGUAL.
+  encenderCamara() {
+    this.camaraError.set('');
+    try {
+      // Dejamos que la librería maneje el permiso de la cámara solita
+      this.scanner.start();
+    } catch (e: any) {
+      this.camaraError.set(`Fallo la cámara: ${e.message}`);
+    }
+  }
+
   async onEvent(eventosDetectados: any, actionControl: any) {
     if (eventosDetectados && eventosDetectados.length > 0 && !this.procesando()) {
       const qrText = eventosDetectados[0].value;
