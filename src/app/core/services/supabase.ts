@@ -77,18 +77,117 @@ export class SupabaseService {
         return data;
     }
 
-    // NUEVO: Inserta una fila en la base de datos y devuelve el ticket generado
-    async registrarCompra(datosCompra: any) {
+    // --- CRUD ADMIN PRODUCTOS ---
+
+    async crearProducto(producto: any) {
         const { data, error } = await this.supabase
-        .from('compras')
-        .insert(datosCompra)
-        .select()   // Pide que la base le devuelva la fila recién creada
-        .single();  // Asegura que devuelva un solo objeto, no un array
+            .from('productos')
+            .insert(producto)
+            .select()
+            .single();
 
         if (error) {
-            console.error('Error en la transacción:', error.message);
+            console.error('Error creando producto:', error.message);
             return null;
         }
         return data;
     }
+
+    async actualizarProducto(id: number, producto: any) {
+        const { data, error } = await this.supabase
+            .from('productos')
+            .update(producto)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Error actualizando producto:', error.message);
+            return null;
+        }
+        return data;
+    }
+
+    async eliminarProducto(id: number) {
+        const { error } = await this.supabase
+            .from('productos')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            console.error('Error eliminando producto:', error.message);
+            return false;
+        }
+        return true;
+    }
+
+    // NUEVO: Inserta una fila en la base de datos y previene la concurrencia (robo de butacas)
+    async registrarCompra(datosCompra: any) {
+        try {
+            // 1. EL DOBLE CHEQUEO (Filtro Anti-Robo de butacas)
+            // Traemos las compras actuales de ESTA función.
+            const { data: comprasPrevias, error: errorChequeo } = await this.supabase
+                .from('compras')
+                .select('butacas')
+                .eq('funcion_id', datosCompra.funcion_id);
+
+            if (errorChequeo) throw errorChequeo;
+
+            // Extraemos y aplanamos todas las butacas que ya están vendidas en la base
+            const butacasYaVendidas = comprasPrevias.flatMap(compra => compra.butacas);
+
+            // Filtramos a ver si alguna de las butacas de NUESTRO carrito está en el array de vendidas
+            const butacasPellizcadas = datosCompra.butacas.filter((b: string) => butacasYaVendidas.includes(b));
+
+            if (butacasPellizcadas.length > 0) {
+                // Alguien fue más rápido. Abortamos la compra devolviendo un aviso.
+                return { 
+                    exito: false, 
+                    mensaje: `¡Qué lástima! Las butacas ${butacasPellizcadas.join(', ')} acaban de ser reservadas por otra persona.`
+                };
+            }
+
+            // 2. EL PAGO (Si pasamos el filtro, guardamos la compra)
+            const { data, error } = await this.supabase
+                .from('compras')
+                .insert(datosCompra)
+                .select()   // Pide que la base le devuelva la fila recién creada
+                .single();  // Asegura que devuelva un solo objeto
+
+            if (error) throw error;
+
+            // Devolvemos objeto de éxito con el ticket
+            return { exito: true, ticket: data };
+
+        } catch (error: any) {
+            console.error('Error en la transacción:', error.message);
+            return { exito: false, mensaje: 'Error al procesar el pago en el servidor.' };
+        }
+    }
+
+    // NUEVO: Busca un cupón por código para aplicar descuentos
+    async validarCupon(codigoInput: string) {
+        // Pasamos todo a mayúsculas por si el usuario escribe "bienvenida20"
+        const codigoLimpio = codigoInput.trim().toUpperCase();
+
+        const { data, error } = await this.supabase
+            .from('cupones')
+            .select('*')
+            .eq('codigo', codigoLimpio)
+            .eq('activo', true) // Solo traemos cupones que estén prendidos
+            .single(); // Esperamos un solo resultado
+
+        if (error) {
+            // Si el error es PGRST116 (No rows found), significa que el cupón no existe, no es un error grave.
+            if (error.code !== 'PGRST116') {
+                console.error('Error buscando cupón:', error.message);
+            }
+            return null;
+        }
+
+        return data;
+    }
+
+
+
 }

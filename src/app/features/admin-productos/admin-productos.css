@@ -1,0 +1,183 @@
+.admin-container {
+    padding: 20px;
+    color: #fff;
+}
+
+.admin-header h2 {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
+
+/* Layout partido a la mitad */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* Estilos de las cajas */
+.form-card,
+.table-card {
+    background-color: #1e1e1e;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.form-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #4caf50;
+}
+
+/* Formulario */
+.campo {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: #ccc;
+    font-weight: bold;
+}
+
+.campo input[type="text"],
+.campo input[type="number"],
+.campo select {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background-color: #2a2a2a;
+    color: white;
+    font-size: 1em;
+}
+
+/* Campos en una misma línea */
+.campo.row {
+    flex-direction: row;
+    gap: 15px;
+}
+
+.campo.row .col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.checkbox-col {
+    justify-content: flex-end;
+    padding-bottom: 10px;
+}
+
+.check-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+/* Botones */
+.acciones-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.btn-guardar,
+.btn-cancelar {
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    flex: 1;
+}
+
+.btn-guardar {
+    background-color: #2e7d32;
+    color: white;
+}
+
+.btn-guardar:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.btn-cancelar {
+    background-color: #555;
+    color: white;
+}
+
+/* Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 15px 10px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+th {
+    color: #aaa;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.img-mini {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.badge {
+    background-color: #333;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    color: #e0e0e0;
+}
+
+.empty-state {
+    padding: 30px;
+    color: #888;
+}
+
+/* Botones de acción en tabla */
+.acciones-tabla {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-editar,
+.btn-eliminar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 6px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-editar:hover {
+    background-color: #334e33;
+}
+
+.btn-eliminar:hover {
+    background-color: #4e3333;
+}

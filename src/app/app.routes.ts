@@ -38,6 +38,11 @@ export const routes: Routes = [
       { 
         path: 'funciones', 
         loadComponent: () => import('./features/admin-funciones/admin-funciones').then(m => m.AdminFunciones) 
+      },
+      // --- EL NUEVO COMPONENTE DE PRODUCTOS ---
+      { 
+        path: 'productos', 
+        loadComponent: () => import('./features/admin-productos/admin-productos').then(m => m.AdminProductos) 
       }
     ]
   },

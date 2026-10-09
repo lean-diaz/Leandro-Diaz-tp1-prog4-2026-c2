@@ -1,0 +1,103 @@
+<div class="admin-container">
+    <header class="admin-header">
+        <h2>Gestión de Candy Bar y Combos</h2>
+    </header>
+
+    <div class="admin-layout">
+
+        <!-- PANEL IZQUIERDO: FORMULARIO -->
+        <section class="form-card">
+            <!-- Cambia el título según si hay un ID seleccionado o no -->
+            <h3>{{ editandoId() ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
+
+            <!-- Conectamos el HTML con el FormGroup del TS -->
+            <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()">
+
+                <div class="campo">
+                    <label>Nombre del Producto:</label>
+                    <input type="text" formControlName="nombre" placeholder="Ej: Combo Mega">
+                </div>
+
+                <div class="campo row">
+                    <div class="col">
+                        <label>Categoría:</label>
+                        <select formControlName="categoria">
+                            @for (cat of categorias; track cat) {
+                            <option [value]="cat">{{ cat }}</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Precio ($):</label>
+                        <input type="number" formControlName="precio">
+                    </div>
+                </div>
+
+                <div class="campo row">
+                    <div class="col">
+                        <label>Costo (Puntos):</label>
+                        <input type="number" formControlName="costo_en_puntos">
+                    </div>
+                    <div class="col checkbox-col">
+                        <label class="check-label">
+                            <!-- El famoso checkbox que definirá si descontamos la butaca luego -->
+                            <input type="checkbox" formControlName="incluye_entrada">
+                            ¿Incluye Entrada?
+                        </label>
+                    </div>
+                </div>
+
+                
+
+                <div class="acciones-form">
+                    @if (editandoId()) {
+                    <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
+                    }
+                    <!-- Se deshabilita si falta llenar algo obligatorio (ej: nombre) -->
+                    <button type="submit" class="btn-guardar" [disabled]="productoForm.invalid">
+                        {{ editandoId() ? 'Actualizar' : 'Crear Producto' }}
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- PANEL DERECHO: GRILLA DE PRODUCTOS -->
+        <section class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio / Puntos</th>
+                        <th>Entrada</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (prod of productos(); track prod.id) {
+                    <tr>
+                        <td>{{ prod.nombre }}</td>
+                        <td><span class="badge">{{ prod.categoria }}</span></td>
+                        <td>${{ prod.precio }} / ⭐{{ prod.costo_en_puntos }}</td>
+
+                        <!-- Mostramos un check verde si incluye entrada, o una X roja si no -->
+                        <td class="text-center">{{ prod.incluye_entrada ? '✅' : '❌' }}</td>
+
+                        <td class="acciones-tabla">
+                            <button class="btn-editar" (click)="editarProducto(prod)" title="Editar">✏️</button>
+                            <button class="btn-eliminar" (click)="eliminarProducto(prod.id)"
+                                title="Eliminar">🗑️</button>
+                        </td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="6" class="text-center empty-state">No hay productos cargados en la base de datos.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+</div>

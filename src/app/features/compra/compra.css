@@ -7,16 +7,24 @@
 }
 
 .resumen-pelicula {
-    flex: 1; /* Ocupa 1 parte del ancho */
+    flex: 1;
+    /* Ocupa 1 parte del ancho */
     background: #f9f9f9;
     padding: 20px;
     border-radius: 12px;
 }
 
+.resumen-pelicula h1,
+.resumen-pelicula h2,
+.resumen-pelicula h3,
+.resumen-pelicula p {
+    color: #333;
+}
+
 .resumen-pelicula img {
     width: 100%;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .detalles {
@@ -29,7 +37,8 @@
 }
 
 .panel-seleccion {
-    flex: 2; /* Ocupa el doble de ancho que el resumen */
+    flex: 2;
+    /* Ocupa el doble de ancho que el resumen */
     display: flex;
     flex-direction: column;
 }
@@ -80,17 +89,19 @@
     color: #333;
 }
 
-.btn-funcion .sala, .btn-funcion .precio {
+.btn-funcion .sala,
+.btn-funcion .precio {
     font-size: 0.9rem;
     color: #666;
 }
 
 /* Estilo para el botón cuando está seleccionado */
 .btn-funcion.seleccionado {
-  background-color: #e50914;
-  color: white;
-  border-color: #b20710;
-  transform: scale(1.05); /* Lo hace un poquito más grande */
+    background-color: #e50914;
+    color: white;
+    border-color: #b20710;
+    transform: scale(1.05);
+    /* Lo hace un poquito más grande */
 }
 
 /* Cambiamos el color del texto interno si está seleccionado */
@@ -108,7 +119,8 @@
 }
 
 .btn-continuar {
-    background-color: #28a745; /* Verde para avanzar */
+    background-color: #28a745;
+    /* Verde para avanzar */
     color: white;
     border: none;
     padding: 12px 24px;
@@ -130,6 +142,16 @@
     display: flex;
     flex-direction: column;
     background: white;
+    color: #333;
+    /* Texto gris oscuro */
+}
+
+.panel-butacas h2,
+.panel-butacas h3,
+.panel-butacas p,
+.resumen-compra p,
+.resumen-compra h3 {
+    color: #333;
 }
 
 .pantalla-cine {
@@ -138,11 +160,12 @@
     padding: 10px;
     margin: 0 auto 40px auto;
     width: 80%;
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0; /* Crea el arco cóncavo de la pantalla */
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    /* Crea el arco cóncavo de la pantalla */
     font-weight: bold;
     letter-spacing: 5px;
     color: #777;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .mapa-sala {
@@ -150,7 +173,8 @@
     flex-direction: column;
     gap: 8px;
     align-items: center;
-    overflow-x: auto; /* Permite scrollear si la pantalla es chica */
+    overflow-x: auto;
+    /* Permite scrollear si la pantalla es chica */
     padding-bottom: 20px;
 }
 
@@ -170,8 +194,10 @@
 .butaca {
     width: 28px;
     height: 28px;
-    border-radius: 6px 6px 3px 3px; /* Simula el respaldo de la silla */
-    background-color: #007bff; /* Silla Libre */
+    border-radius: 6px 6px 3px 3px;
+    /* Simula el respaldo de la silla */
+    background-color: #007bff;
+    /* Silla Libre */
     color: white;
     font-size: 0.65rem;
     border: none;
@@ -190,8 +216,10 @@
 }
 
 .butaca.seleccionada {
-    background-color: #28a745; /* Silla Elegida (Verde) */
-    transform: scale(1.15); /* Efecto pop up al hacer click */
+    background-color: #28a745;
+    /* Silla Elegida (Verde) */
+    transform: scale(1.15);
+    /* Efecto pop up al hacer click */
     box-shadow: 0 0 8px rgba(40, 167, 69, 0.6);
 }
 
@@ -262,11 +290,19 @@
     background: white;
     padding: 20px;
     border-radius: 12px;
+    color: #333;
+}
+
+.panel-candy h2,
+.panel-candy h3,
+.panel-candy p {
+    color: #333;
 }
 
 .grilla-productos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Crea columnas dinámicas automáticamente */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* Crea columnas dinámicas automáticamente */
     gap: 20px;
     margin-top: 20px;
 }
@@ -276,10 +312,11 @@
     border-radius: 12px;
     padding: 20px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Empuja los botones hacia abajo */
+    justify-content: space-between;
+    /* Empuja los botones hacia abajo */
 }
 
 .tarjeta-producto h4 {
@@ -329,7 +366,8 @@
 .controles-candy .cantidad {
     font-size: 1.2rem;
     font-weight: bold;
-    min-width: 25px; /* Evita que los botones salten cuando el número pasa de 9 a 10 */
+    min-width: 25px;
+    /* Evita que los botones salten cuando el número pasa de 9 a 10 */
 }
 
 
@@ -346,11 +384,19 @@
     background: #f8f9fa;
     padding: 25px;
     border-radius: 8px;
-    border: 2px dashed #ccc; /* Bordes punteados tipo ticket */
+    border: 2px dashed #ccc;
+    /* Bordes punteados tipo ticket */
+    color: #333;
+    /* Texto gris oscuro casi negro */
 }
 
 .ticket-resumen h3 {
     margin-top: 0;
+    color: #333;
+}
+
+.ticket-resumen p,
+.ticket-resumen li {
     color: #333;
 }
 
@@ -377,7 +423,7 @@
     background: white;
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -420,7 +466,8 @@
 }
 
 .fila-campos .campo {
-    flex: 1; /* Hacen que ocupen el 50% cada uno */
+    flex: 1;
+    /* Hacen que ocupen el 50% cada uno */
 }
 
 .btn-confirmar-pago {
@@ -452,3 +499,41 @@
     border-color: #333;
 }
 
+
+.seccion-cupon {
+    margin: 15px 0;
+}
+
+.caja-cupon {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.caja-cupon input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn-aplicar {
+    padding: 8px 15px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-aplicar:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.cupon-exito {
+    color: #2e7d32;
+    /* Verde oscurito */
+    font-weight: bold;
+    margin-top: 10px;
+}

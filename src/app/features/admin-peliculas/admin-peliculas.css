@@ -1,0 +1,70 @@
+/* --- ESTILOS DEL FORMULARIO CRUD --- */
+.formulario-admin {
+    background-color: #1c1c24;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #2a2a35;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.formulario-admin h3 {
+    color: white;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.input-form {
+    background-color: #141419;
+    border: 1px solid #333;
+    color: white;
+    padding: 0.8rem;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.input-form:focus {
+    outline: none;
+    border-color: #e50914;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mini-poster {
+    width: 40px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}

@@ -30,6 +30,9 @@ export class Compra implements OnInit, OnDestroy {
   productosCandy = signal<any[]>([]);
   carritoCandy = signal<any[]>([]);
 
+  descuentoAplicado = signal<number>(0); // Porcentaje (ej: 20)
+  cuponAplicado = signal<string | null>(null); // Nombre del cupón
+
   // =========================================================
   // 2. CONSTANTES (no cambian nunca, no necesitan ser signals)
   // =========================================================
@@ -68,6 +71,7 @@ export class Compra implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error cargando datos iniciales:', error);
     }
+
   }
 
   ngOnDestroy() {
@@ -193,19 +197,60 @@ export class Compra implements OnInit, OnDestroy {
     const funcion = this.funcionSeleccionada();
     if (!funcion) return 0;
 
-    let total = 0;
+    let totalParcial = 0;
+    const precioButacaBase = funcion.precio_base;
+    let cantidadButacas = this.butacasSeleccionadas().length;
 
+    // 1. Sumar precio base de todas las butacas seleccionadas
+    totalParcial += (precioButacaBase * cantidadButacas);
+
+    // 2. Sumar recargos VIP (El combo descuenta la butaca base, pero si elegiste VIP, el recargo lo pagás igual)
     for (const asiento of this.butacasSeleccionadas()) {
-      total += funcion.precio_base;
-      if (this.esVIP(asiento.charAt(0))) total += this.RECARGO_VIP;
+      if (this.esVIP(asiento.charAt(0))) {
+        totalParcial += this.RECARGO_VIP;
+      }
     }
 
+    // 3. Procesar el Candy Bar
+    let combosConEntrada = 0;
     for (const item of this.carritoCandy()) {
-      total += item.precio;
+      totalParcial += Number(item.precio); // Sumamos el precio del producto/combo
+      
+      // Si el producto incluye entrada, lo contamos
+      if (item.incluye_entrada) {
+        combosConEntrada++;
+      }
     }
 
-    return total;
+    // 4. Descontar butacas base (No podemos descontar más butacas de las que seleccionó)
+    const butacasADescontar = Math.min(combosConEntrada, cantidadButacas);
+    totalParcial -= (precioButacaBase * butacasADescontar);
+
+    // 5. Aplicar cupón de descuento (si hay)
+    const porcentaje = this.descuentoAplicado();
+    if (porcentaje > 0) {
+      const montoDescuento = (totalParcial * porcentaje) / 100;
+      totalParcial = totalParcial - montoDescuento;
+    }
+
+    return totalParcial;
   });
+
+  async aplicarDescuento(inputCodigo: string) {
+    if (!inputCodigo) return;
+
+    const cupon = await this.supabaseService.validarCupon(inputCodigo);
+
+    if (cupon) {
+      this.descuentoAplicado.set(cupon.porcentaje);
+      this.cuponAplicado.set(cupon.codigo);
+      alert(`¡Cupón aplicado! Tenés un ${cupon.porcentaje}% de descuento.`);
+    } else {
+      alert('El cupón ingresado no existe o ya no es válido.');
+      this.descuentoAplicado.set(0);
+      this.cuponAplicado.set(null);
+    }
+  }
 
   // =========================================================
   // 9. CONFIRMACIÓN Y PAGO
@@ -225,18 +270,25 @@ export class Compra implements OnInit, OnDestroy {
     };
 
     try {
-      const ticketGuardado = await this.supabaseService.registrarCompra(paqueteBD);
+      const resultado = await this.supabaseService.registrarCompra(paqueteBD);
 
-      if (ticketGuardado) {
-        alert(`¡Compra confirmada! Tu número de ticket es el #${ticketGuardado.id}`);
+      if (resultado.exito) {
+        alert(`¡Compra confirmada! Tu número de ticket es el #${resultado.ticket.id}`);
         this.butacasSeleccionadas.set([]);
         this.carritoCandy.set([]);
+        // Acá a futuro podemos navegar a una ruta de "ticket generado"
       } else {
-        alert('Hubo un error al procesar el pago. Intentá de nuevo.');
+        // Acá mostramos el mensaje de que le robaron la butaca
+        alert(resultado.mensaje);
+        
+        // Volvemos al paso de selección de butacas para que elija otras
+        this.avanzarPaso(2);
       }
     } catch (error) {
       console.error('Error al registrar la compra:', error);
       alert('Hubo un error al procesar el pago. Intentá de nuevo.');
     }
   }
+
+  
 }

@@ -1,1 +1,75 @@
-<p>admin-peliculas works!</p>
+<div class="admin-container">
+    <h2>Catálogo de Películas</h2>
+    <p class="subtitle">Gestión de la cartelera y restricciones.</p>
+
+    <!-- BOTÓN PARA ABRIR/CERRAR FORMULARIO -->
+    <button class="btn-primary" (click)="mostrarFormulario.set(!mostrarFormulario())" style="margin-bottom: 1.5rem;">
+        {{ mostrarFormulario() ? 'Cancelar' : '+ Agregar Película' }}
+    </button>
+
+    <!-- EL FORMULARIO CRUD -->
+    @if (mostrarFormulario()) {
+    <div class="formulario-admin">
+        <h3>Alta de Nueva Película</h3>
+
+        <div class="form-grid">
+            <input type="text" [(ngModel)]="nuevaPelicula.nombre" placeholder="Nombre de la película"
+                class="input-form">
+
+            <input type="number" [(ngModel)]="nuevaPelicula.duracion_minutos" placeholder="Duración (Minutos)"
+                class="input-form">
+
+            <select [(ngModel)]="nuevaPelicula.clasificacion" class="input-form">
+                <option value="">Restricción de Edad...</option>
+                <option value="ATP">ATP (Todo Público)</option>
+                <option value="+13">+13 Años</option>
+                <option value="+16">+16 Años</option>
+                <option value="+18">+18 Años</option>
+            </select>
+
+            <input type="text" [(ngModel)]="nuevaPelicula.formatos_texto" placeholder="Formatos (ej: 2D, 3D, 4D)"
+                class="input-form">
+
+            <input type="text" [(ngModel)]="nuevaPelicula.idiomas_texto"
+                placeholder="Idiomas (ej: Castellano, Subtitulada)" class="input-form">
+
+            <input type="text" [(ngModel)]="nuevaPelicula.imagen_url" placeholder="URL de la imagen/póster"
+                class="input-form">
+        </div>
+
+        <button class="btn-success" (click)="guardarPelicula()">Guardar en Base de Datos</button>
+    </div>
+    }
+
+    <!-- LA TABLA (Acá va el código de la tabla que ya tenías) -->
+    @if (isLoading()) {
+    <div class="loading">Cargando catálogo...</div>
+    } @else {
+    <div class="table-responsive">
+        <table class="tabla-admin">
+            <thead>
+                <tr>
+                    <th>Póster</th>
+                    <th>Nombre</th>
+                    <th>Duración</th>
+                    <th>Clasificación</th>
+                    <th>Formatos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (peli of peliculas(); track peli.id) {
+                <tr>
+                    <td><img [src]="peli.imagen_url" alt="Poster" class="mini-poster"></td>
+                    <td class="resaltado">{{ peli.nombre }}</td>
+                    <td>{{ peli.duracion_min }} min</td>
+                    <td><span class="badge">{{ peli.clasificacion }}</span></td>
+                    <td>{{ peli.formatos ? peli.formatos.join(', ') : 'N/A' }}</td>
+                    <td><button class="btn-secondary">Editar</button></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>

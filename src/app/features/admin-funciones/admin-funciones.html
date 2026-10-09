@@ -1,1 +1,74 @@
-<p>admin-funciones works!</p>
+<div class="admin-container">
+    <h2>Programación de Salas</h2>
+    <p class="subtitle">Gestión inteligente de horarios (con prevención de solapamientos).</p>
+
+    <!-- Botón para abrir formulario -->
+    <button class="btn-primary" (click)="mostrarFormulario.set(!mostrarFormulario())" style="margin-bottom: 1.5rem;">
+        {{ mostrarFormulario() ? 'Cancelar' : '+ Programar Función' }}
+    </button>
+
+    <!-- EL FORMULARIO -->
+    @if (mostrarFormulario()) {
+    <div class="formulario-admin">
+        <h3>Nueva Función</h3>
+
+        <div class="form-grid">
+            <!-- Selector de Película Dinámico -->
+            <select [(ngModel)]="nuevaFuncion.pelicula_id" class="input-form">
+                <option value="">Seleccionar Película...</option>
+                @for (p of peliculas(); track p.id) {
+                    <!-- El [ngValue] asegura que se pase el número correcto -->
+                    <option [ngValue]="p.id">{{ p.nombre }} ({{ p.duracion_min }} min)</option> 
+                }
+            </select>
+
+            <!-- Selector de Sala -->
+            <select [(ngModel)]="nuevaFuncion.sala_id" class="input-form">
+                <option value="">Seleccionar Sala...</option>
+                @for (s of salas; track s) {
+                <option [value]="s">Sala {{ s }}</option>
+                }
+            </select>
+
+            <!-- Selector de Fecha y Hora -->
+            <input type="datetime-local" [(ngModel)]="nuevaFuncion.fecha_hora" class="input-form">
+
+            <!-- Precio Base -->
+            <input type="number" [(ngModel)]="nuevaFuncion.precio_base" placeholder="Precio Base ($)"
+                class="input-form">
+        </div>
+
+        <button class="btn-success" (click)="guardarFuncion()">Validar y Guardar</button>
+    </div>
+    }
+
+    <!-- LA TABLA DE FUNCIONES -->
+    @if (isLoading()) {
+    <div class="loading">Cargando programación...</div>
+    } @else {
+    <div class="table-responsive">
+        <table class="tabla-admin">
+            <thead>
+                <tr>
+                    <th>Sala</th>
+                    <th>Película</th>
+                    <th>Fecha y Hora (Inicio)</th>
+                    <th>Hora Fin (+ Limpieza)</th>
+                    <th>Precio Base</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (f of funciones(); track f.id) {
+                <tr>
+                    <td><span class="badge">Sala {{ f.sala_id }}</span></td>
+                    <td class="resaltado">{{ f.peliculas?.nombre }}</td>
+                    <td>{{ f.fecha_hora | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td style="color: #ff4d4d; font-weight: bold;">{{ f.fecha_hora_fin | date:'HH:mm' }}</td>
+                    <td>${{ f.precio_base }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>
