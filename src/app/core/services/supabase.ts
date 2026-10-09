@@ -121,47 +121,39 @@ export class SupabaseService {
         return true;
     }
 
-    // NUEVO: Inserta una fila en la base de datos y previene la concurrencia (robo de butacas)
-    async registrarCompra(datosCompra: any) {
+    async registrarCompra(compra: any): Promise<{ exito: boolean; ticket?: any; mensaje?: string }> {
         try {
-            // 1. EL DOBLE CHEQUEO (Filtro Anti-Robo de butacas)
-            // Traemos las compras actuales de ESTA función.
-            const { data: comprasPrevias, error: errorChequeo } = await this.supabase
-                .from('compras')
-                .select('butacas')
-                .eq('funcion_id', datosCompra.funcion_id);
+            // 1. Obtenemos el usuario logueado
+            const { data: authData } = await this.supabase.auth.getUser();
+            const usuarioId = authData.user ? authData.user.id : null;
 
-            if (errorChequeo) throw errorChequeo;
+            // 2. Preparamos los datos sumando el ID del usuario
+            const datosDeCompra = {
+                ...compra,
+                usuario_id: usuarioId
+            };
 
-            // Extraemos y aplanamos todas las butacas que ya están vendidas en la base
-            const butacasYaVendidas = comprasPrevias.flatMap(compra => compra.butacas);
-
-            // Filtramos a ver si alguna de las butacas de NUESTRO carrito está en el array de vendidas
-            const butacasPellizcadas = datosCompra.butacas.filter((b: string) => butacasYaVendidas.includes(b));
-
-            if (butacasPellizcadas.length > 0) {
-                // Alguien fue más rápido. Abortamos la compra devolviendo un aviso.
-                return {
-                    exito: false,
-                    mensaje: `¡Qué lástima! Las butacas ${butacasPellizcadas.join(', ')} acaban de ser reservadas por otra persona.`
-                };
-            }
-
-            // 2. EL PAGO (Si pasamos el filtro, guardamos la compra)
+            // 3. Insertamos en Supabase pidiendo que nos devuelva el ID de la fila
             const { data, error } = await this.supabase
                 .from('compras')
-                .insert(datosCompra)
-                .select()   // Pide que la base le devuelva la fila recién creada
-                .single();  // Asegura que devuelva un solo objeto
+                .insert(datosDeCompra)
+                .select('id')
+                .single();
 
             if (error) throw error;
 
-            // Devolvemos objeto de éxito con el ticket
-            return { exito: true, ticket: data };
+            // 4. Devolvemos el objeto tal cual lo espera el componente
+            return {
+                exito: true,
+                ticket: data
+            };
 
-        } catch (error: any) {
-            console.error('Error en la transacción:', error.message);
-            return { exito: false, mensaje: 'Error al procesar el pago en el servidor.' };
+        } catch (err: any) {
+            console.error('Error registrando la compra:', err.message);
+            return {
+                exito: false,
+                mensaje: err.message
+            };
         }
     }
 
@@ -235,6 +227,64 @@ export class SupabaseService {
 
         if (error) {
             console.error('Error guardando en auditoría:', error.message);
+        }
+    }
+
+
+    // --- MÉTODOS PARA "MIS PELÍCULAS" Y CANCELACIONES ---
+
+    async getMisCompras(usuarioId: string) {
+        const { data, error } = await this.supabase
+            .from('compras')
+            .select('*, funciones(*, peliculas(nombre, imagen_url), salas(nombre))')
+            .eq('usuario_id', usuarioId)
+            .order('created_at', { ascending: false }); // Las más nuevas primero
+
+        if (error) {
+            console.error('Error trayendo historial:', error.message);
+            return [];
+        }
+        return data;
+    }
+
+    async cancelarCompraYDevolverSaldo(compraId: number, usuarioId: string, montoADevolver: number) {
+        try {
+            // 1. Buscamos el saldo actual con maybeSingle() para evitar el error 406 si la fila no existe
+            const { data: usuario, error: errorUser } = await this.supabase
+                .from('usuarios')
+                .select('saldo')
+                .eq('id', usuarioId)
+                .maybeSingle(); // <-- ESTA ES LA CLAVE SALVADORA
+
+            if (errorUser) throw errorUser;
+
+            // Si el usuario existe, sumamos. Si no existe (es null), asumimos que su saldo era 0.
+            const saldoActual = usuario ? (Number(usuario.saldo) || 0) : 0;
+            const nuevoSaldo = saldoActual + montoADevolver;
+
+            // 2. Actualizamos el saldo del usuario (si la fila no existe, simplemente no actualiza nada y no tira error)
+            const { error: errorUpdateUser } = await this.supabase
+                .from('usuarios')
+                .update({ saldo: nuevoSaldo })
+                .eq('id', usuarioId);
+
+            if (errorUpdateUser) throw errorUpdateUser;
+
+            // 3. Cancelamos la compra y liberamos las butacas (asegurándonos de NO usar .single() acá tampoco)
+            const { error: errorCompra } = await this.supabase
+                .from('compras')
+                .update({
+                    estado: 'cancelada',
+                    butacas: []
+                })
+                .eq('id', compraId);
+
+            if (errorCompra) throw errorCompra;
+
+            return { exito: true };
+        } catch (error: any) {
+            console.error('Error en la cancelación:', error.message);
+            return { exito: false, mensaje: error.message };
         }
     }
 

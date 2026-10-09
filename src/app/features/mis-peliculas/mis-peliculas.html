@@ -1,0 +1,50 @@
+<div class="mis-peliculas-container">
+    <h2>Mis Entradas 🎟️</h2>
+    <p class="subtitle">Historial de tus compras y reservas.</p>
+
+    @if (cargando()) {
+    <div class="cargando">Cargando tu historial...</div>
+    } @else {
+
+    @if (compras().length === 0) {
+    <div class="vacio">
+        <h3>Todavía no compraste ninguna entrada.</h3>
+        <p>¡Andá a la cartelera y elegí tu próxima película!</p>
+    </div>
+    } @else {
+    <div class="tickets-grid">
+        @for (compra of compras(); track compra.id) {
+        <div class="ticket-card" [class.cancelado]="compra.estado === 'cancelada'">
+
+            <div class="ticket-header">
+                <h3>{{ compra.funciones?.peliculas?.nombre }}</h3>
+                <span class="badge" [class.badge-activa]="compra.estado !== 'cancelada'"
+                    [class.badge-cancelada]="compra.estado === 'cancelada'">
+                    {{ compra.estado === 'cancelada' ? 'Cancelada' : 'Confirmada' }}
+                </span>
+            </div>
+
+            <div class="ticket-body">
+                <p><strong>🍿 Sala:</strong> {{ compra.funciones?.salas?.nombre }}</p>
+                <p><strong>📅 Fecha:</strong> {{ compra.funciones?.fecha_hora | date:'dd/MM/yyyy HH:mm' }}</p>
+
+                @if (compra.estado !== 'cancelada') {
+                <p><strong>💺 Butacas:</strong> {{ compra.butacas?.join(', ') }}</p>
+                <p><strong>🏷️ Código QR:</strong> #{{ compra.id }}</p>
+                }
+
+                <p class="total">Total pagado: ${{ compra.total_pagado }}</p>
+            </div>
+
+            <!-- Mostrar el botón solo si está activa y la peli no empezó -->
+            @if (compra.estado !== 'cancelada') {
+            <div class="ticket-footer">
+                <button class="btn-cancelar" (click)="cancelarCompra(compra)">❌ Cancelar Reserva</button>
+            </div>
+            }
+        </div>
+        }
+    </div>
+    }
+    }
+</div>

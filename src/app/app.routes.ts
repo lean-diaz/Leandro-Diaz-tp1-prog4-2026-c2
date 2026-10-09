@@ -2,12 +2,19 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard'; // Lo dejamos por si a futuro protegés otras rutas
 import { adminGuard } from './core/guards/admin.guard'; // Importamos el patovica VIP
 import { AdminMetricas } from './features/admin/admin-metricas/admin-metricas';
+import { MisPeliculas } from './features/mis-peliculas/mis-peliculas';
 
 export const routes: Routes = [
   // Tu ruta principal (la cartelera) -> Apunta a home.ts y la clase Home
   { 
     path: '', 
     loadComponent: () => import('./features/home/home').then(m => m.Home) 
+  },
+
+  // NUEVA RUTA: Mis películas
+  {
+    path: 'mis-peliculas',
+    component: MisPeliculas
   },
   
   // Tu ruta de compra -> Apunta a compra.ts y la clase Compra
