@@ -1,31 +1,36 @@
 <div class="escaner-container">
   <h2>Escáner de Entradas 📷</h2>
 
-  <!-- SOLO mostramos el contenido si estamos en una pantalla real, no en el servidor -->
+  <!-- SOLO mostramos el contenido si estamos en una pantalla real -->
   @if (esNavegador) {
     
-    <!-- MODO 1: CÁMARA -->
-    @if (!ticketEscaneado() && !procesando()) {
-      <div class="camera-box">
-        
-        <ngx-scanner-qrcode #action="scanner" [config]="config" (event)="onEvent($event, action)"></ngx-scanner-qrcode>
-        
-        <div class="camera-controls">
-          <button class="btn-camara" (click)="action.isStart ? action.stop() : action.start()">
-            {{ action.isStart ? '🛑 Apagar Cámara' : '▶️ Encender Cámara' }}
-          </button>
-        </div>
-
-        
+    <!-- MODO 1: CÁMARA (Se oculta mágicamente si hay ticket o cargando) -->
+    <div class="camera-box" [style.display]="(!ticketEscaneado() && !procesando()) ? 'block' : 'none'">
+      
+      <!-- Video Nativo: Nunca falla en móviles -->
+      <video #video playsinline muted style="width: 100%; min-height: 250px; background: #1a1a24; border-radius: 8px; object-fit: cover;"></video>
+      
+      <div class="camera-controls">
+        <button class="btn-camara" (click)="camaraActiva() ? detenerCamara() : iniciarCamara()">
+          {{ camaraActiva() ? '🛑 Apagar Cámara' : '▶️ Encender Cámara' }}
+        </button>
       </div>
-    }
 
+      @if (camaraError()) {
+        <div class="alerta-error">
+          <p>⚠️ {{ camaraError() }}</p>
+        </div>
+      }
+    </div>
+
+    <!-- CARGANDO -->
     @if (procesando()) {
       <div class="cargando">
         <h3>🔍 Buscando ticket en la base de datos...</h3>
       </div>
     }
 
+    <!-- MENSAJE DE ERROR -->
     @if (errorMsj()) {
       <div class="alerta-error">
         <p>❌ {{ errorMsj() }}</p>
@@ -49,8 +54,8 @@
         }
 
         <div class="detalles-ticket">
-          <p><strong>Película:</strong> {{ ticketEscaneado().funciones.peliculas.nombre }}</p>
-          <p><strong>Sala:</strong> {{ ticketEscaneado().funciones.salas.nombre }}</p>
+          <p><strong>Película:</strong> {{ ticketEscaneado().funciones?.peliculas?.nombre }}</p>
+          <p><strong>Sala:</strong> {{ ticketEscaneado().funciones?.salas?.nombre }}</p>
           <p><strong>Butacas:</strong> {{ ticketEscaneado().butacas.join(', ') }}</p>
 
           <hr>
@@ -75,7 +80,7 @@
 
   } @else {
     <div class="cargando">
-      <p>Cargando escáner...</p>
+      <p>Cargando aplicación...</p>
     </div>
   }
 </div>
