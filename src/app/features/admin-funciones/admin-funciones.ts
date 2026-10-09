@@ -121,6 +121,14 @@ export class AdminFunciones implements OnInit {
       alert('Error en la base de datos: ' + error.message);
     } else {
       alert('✅ Función programada con éxito en cartelera.');
+      
+      // --- INICIO DEL GRAN HERMANO ---
+      // Sacamos el nombre de la película que buscaste arriba en la línea 81
+      const nombrePelicula = peliSeleccionada ? peliSeleccionada.nombre : 'una película';
+      // Mandamos el registro a Supabase
+      await this.supabaseService.registrarAuditoria(`Programó una nueva función para: ${nombrePelicula}`);
+      // --- FIN DEL GRAN HERMANO ---
+
       this.mostrarFormulario.set(false);
       this.cargarDatos();
     }

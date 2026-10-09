@@ -19,56 +19,56 @@ export class SupabaseService {
 
     async getPeliculas() { // avisa que va a tomarse su tiempo (viaja a internet) y no debe congelar la página.
         const { data, error } = await this.supabase // Frena a esperar la respuesta y desestructura los cajones 'data' y 'error'.
-        // de la tabla peliculas, traemos todas las columnas
-        .from('peliculas')
-        .select('*'); 
+            // de la tabla peliculas, traemos todas las columnas
+            .from('peliculas')
+            .select('*');
 
         // Si hay error, imprimimos el error y devolvemos un array vacio para que la pagina no se rompa
         if (error) {
-        console.error('Error trayendo películas:', error.message);
-        return [];
+            console.error('Error trayendo películas:', error.message);
+            return [];
         }
-    
+
         return data; // Si no hubo error, devuelve las películas encontradas.
     }
 
     // Nueva función: Recibe un ID (que viene como texto desde la URL)
     async getPeliculaById(id: string) {
         const { data, error } = await this.supabase
-        .from('peliculas')
-        .select('*')
-        .eq('id', id) // LÓGICA SQL: "Donde la columna 'id' sea igual a esta variable"
-        .single();    // LÓGICA: "Traeme un solo objeto, no me traigas un array"
+            .from('peliculas')
+            .select('*')
+            .eq('id', id) // LÓGICA SQL: "Donde la columna 'id' sea igual a esta variable"
+            .single();    // LÓGICA: "Traeme un solo objeto, no me traigas un array"
 
         if (error) {
             console.error('Error buscando la película:', error.message);
             return null;
         }
-    
+
         return data;
     }
 
     // Busca todas las funciones que correspondan a una película específica
     async getFuncionesDePelicula(peliculaId: string) {
         const { data, error } = await this.supabase
-        .from('funciones')
-        .select('*, salas(nombre)') // MAGIA RELACIONAL: Trae la función y también el nombre de la sala conectada
-        .eq('pelicula_id', peliculaId)
-        .order('fecha_hora', { ascending: true }); // Las ordena cronológicamente
+            .from('funciones')
+            .select('*, salas(nombre)') // MAGIA RELACIONAL: Trae la función y también el nombre de la sala conectada
+            .eq('pelicula_id', peliculaId)
+            .order('fecha_hora', { ascending: true }); // Las ordena cronológicamente
 
         if (error) {
             console.error('Error buscando funciones:', error.message);
             return [];
         }
-    
+
         return data;
     }
 
     // Trae todo el catálogo del Candy Bar
     async getProductosCandy() {
         const { data, error } = await this.supabase
-        .from('productos')
-        .select('*');
+            .from('productos')
+            .select('*');
 
         if (error) {
             console.error('Error trayendo el Candy Bar:', error.message);
@@ -141,8 +141,8 @@ export class SupabaseService {
 
             if (butacasPellizcadas.length > 0) {
                 // Alguien fue más rápido. Abortamos la compra devolviendo un aviso.
-                return { 
-                    exito: false, 
+                return {
+                    exito: false,
                     mensaje: `¡Qué lástima! Las butacas ${butacasPellizcadas.join(', ')} acaban de ser reservadas por otra persona.`
                 };
             }
@@ -216,6 +216,26 @@ export class SupabaseService {
             return false;
         }
         return true;
+    }
+
+
+    // --- MÉTODO PARA AUDITORÍA (EL GRAN HERMANO) ---
+    async registrarAuditoria(accion: string) {
+        // 1. Obtenemos al usuario que está logueado actualmente
+        const { data: userData } = await this.supabase.auth.getUser();
+        const email = userData.user?.email || 'admin@desconocido.com';
+
+        // 2. Insertamos el registro en la tabla oculta
+        const { error } = await this.supabase
+            .from('auditoria')
+            .insert({
+                usuario_email: email,
+                accion: accion
+            });
+
+        if (error) {
+            console.error('Error guardando en auditoría:', error.message);
+        }
     }
 
 

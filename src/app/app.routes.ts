@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard'; // Lo dejamos por si a futuro protegés otras rutas
 import { adminGuard } from './core/guards/admin.guard'; // Importamos el patovica VIP
+import { AdminMetricas } from './features/admin/admin-metricas/admin-metricas';
 
 export const routes: Routes = [
   // Tu ruta principal (la cartelera) -> Apunta a home.ts y la clase Home
@@ -43,7 +44,9 @@ export const routes: Routes = [
       { 
         path: 'productos', 
         loadComponent: () => import('./features/admin-productos/admin-productos').then(m => m.AdminProductos) 
-      }
+      },
+      // LA RUTA DEBE IR ACÁ ADENTRO (sin la palabra 'admin/' al principio)
+      { path: 'metricas', component: AdminMetricas },
     ]
   },
 

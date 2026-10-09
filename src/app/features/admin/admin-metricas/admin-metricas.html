@@ -1,0 +1,19 @@
+<div class="admin-container">
+    <h2>Métricas de Ventas 📊</h2>
+    <p class="subtitle">Análisis de rendimiento real por película.</p>
+
+    <!-- BOTONES DE EXPORTACIÓN -->
+    <div style="margin: 1.5rem 0; display: flex; gap: 1rem;">
+        <button class="btn-success" (click)="exportarExcel()">📊 Descargar Excel</button>
+        <button class="btn-secundario" (click)="exportarPDF()">📄 Guardar como PDF</button>
+    </div>
+
+    @if (isLoading) {
+    <div style="color: white; margin-top: 2rem;">Calculando ventas totales...</div>
+    } @else {
+    <div class="chart-container">
+        <!-- El #graficoVentas es vital para que TypeScript lo encuentre -->
+        <canvas #graficoVentas></canvas>
+    </div>
+    }
+</div>

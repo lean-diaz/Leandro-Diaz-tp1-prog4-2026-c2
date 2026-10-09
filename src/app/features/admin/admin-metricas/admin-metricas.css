@@ -1,0 +1,17 @@
+.admin-container {
+    padding: 2rem;
+    color: white;
+}
+
+.chart-container {
+    background-color: #1a1a24;
+    /* Fondo oscuro tipo panel */
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    /* Controlamos el tamaño para que no se desborde */
+    position: relative;
+    height: 400px;
+    width: 100%;
+}

@@ -20,6 +20,7 @@
     "@angular/service-worker": "^22.1.0",
     "@supabase/supabase-js": "^2.116.0",
     "angularx-qrcode": "^22.0.1",
+    "chart.js": "^4.5.1",
     "jsqr": "^1.4.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
