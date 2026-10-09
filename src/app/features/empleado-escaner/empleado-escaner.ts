@@ -16,12 +16,9 @@ export class EmpleadoEscaner {
   ticketEscaneado = signal<any>(null);
   errorMsj = signal<string>('');
   procesando = signal<boolean>(false);
-  camaraError = signal<string>('');
   
-  // EL SALVAVIDAS: Variable para saber si estamos en un navegador real
   esNavegador = false;
 
-  // Forzamos que use la cámara de atrás
   config: ScannerQRCodeConfig = {
     constraints: {
       video: { facingMode: 'environment' }
@@ -34,21 +31,14 @@ export class EmpleadoEscaner {
   ) {
     this.esNavegador = isPlatformBrowser(this.platformId);
     
-    // Solo cargamos el motor de la cámara si estamos en un navegador real (Evita el 504 de Vercel)
+    // PRE-CARGA: Descargamos el motor acá, seguro y en silencio.
+    // Así, cuando el usuario toque el botón, la cámara se abre al instante.
     if (this.esNavegador) {
       LOAD_WASM().subscribe();
     }
   }
 
-  encenderCamara() {
-    this.camaraError.set('');
-    try {
-      // Dejamos que la librería maneje el permiso de la cámara solita
-      this.scanner.start();
-    } catch (e: any) {
-      this.camaraError.set(`Fallo la cámara: ${e.message}`);
-    }
-  }
+  // Eliminamos la función encenderCamara() porque ahora la llamamos directo desde el HTML
 
   async onEvent(eventosDetectados: any, actionControl: any) {
     if (eventosDetectados && eventosDetectados.length > 0 && !this.procesando()) {
@@ -86,6 +76,9 @@ export class EmpleadoEscaner {
   volverAEscanear() {
     this.ticketEscaneado.set(null);
     this.errorMsj.set('');
-    this.encenderCamara();
+    // Al volver a escanear, la orden es directa y síncrona
+    if (this.scanner) {
+      this.scanner.start();
+    }
   }
 }

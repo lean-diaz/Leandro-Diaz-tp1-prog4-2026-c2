@@ -11,16 +11,12 @@
         <ngx-scanner-qrcode #action="scanner" [config]="config" (event)="onEvent($event, action)"></ngx-scanner-qrcode>
         
         <div class="camera-controls">
-          <button class="btn-camara" (click)="action.isStart ? action.stop() : encenderCamara()">
+          <button class="btn-camara" (click)="action.isStart ? action.stop() : action.start()">
             {{ action.isStart ? '🛑 Apagar Cámara' : '▶️ Encender Cámara' }}
           </button>
         </div>
 
-        @if (camaraError()) {
-          <div class="alerta-error">
-            <p>⚠️ {{ camaraError() }}</p>
-          </div>
-        }
+        
       </div>
     }
 
