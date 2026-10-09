@@ -8,7 +8,14 @@
         <ngx-scanner-qrcode #action="scanner" (event)="onEvent($event, action)"></ngx-scanner-qrcode>
 
         <div class="camera-controls">
-            <!-- VOLVEMOS AL START() -->
+            <!-- Selector de cámaras disponibles -->
+            <select #selectDispositivo (change)="action.playDevice(selectDispositivo.value)" class="selector-camara">
+                <option value="" selected disabled>Seleccionar Cámara...</option>
+                @for (dispositivo of action.devices.value; track dispositivo.deviceId) {
+                <option [value]="dispositivo.deviceId">{{ dispositivo.label || 'Cámara ' + ($index + 1) }}</option>
+                }
+            </select>
+
             <button class="btn-camara" (click)="action.isStart ? action.stop() : action.start()">
                 {{ action.isStart ? '🛑 Apagar Cámara' : '▶️ Encender Cámara' }}
             </button>
