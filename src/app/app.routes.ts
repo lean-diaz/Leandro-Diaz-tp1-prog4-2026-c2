@@ -59,6 +59,12 @@ export const routes: Routes = [
     path: 'login', 
     loadComponent: () => import('./features/login/login').then(m => m.Login) 
   },
+
+  // RUTA DEL EMPLEADO PARA ESCANEAR
+  { 
+    path: 'escaner', 
+    loadComponent: () => import('./features/empleado-escaner/empleado-escaner').then(m => m.EmpleadoEscaner) 
+  },
   
   // Si escriben cualquier fruta en la URL... (SIEMPRE ÚLTIMA)
   { path: '**', redirectTo: '' }

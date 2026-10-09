@@ -125,15 +125,16 @@
           <p><strong>¿Tenés un código de descuento?</strong></p>
           <div class="caja-cupon">
             <input type="text" #inputCupon placeholder="Ej: BIENVENIDA20" [disabled]="descuentoAplicado() > 0">
-            <button class="btn-aplicar" (click)="aplicarDescuento(inputCupon.value)" [disabled]="descuentoAplicado() > 0">
+            <button class="btn-aplicar" (click)="aplicarDescuento(inputCupon.value)"
+              [disabled]="descuentoAplicado() > 0">
               Aplicar
             </button>
           </div>
-          
+
           @if (descuentoAplicado() > 0) {
-            <p class="cupon-exito">
-              ✅ Cupón "{{ cuponAplicado() }}" aplicado (-{{ descuentoAplicado() }}%)
-            </p>
+          <p class="cupon-exito">
+            ✅ Cupón "{{ cuponAplicado() }}" aplicado (-{{ descuentoAplicado() }}%)
+          </p>
           }
         </div>
         <hr>
@@ -168,6 +169,30 @@
     </div>
   </section>
   }
+
+
+  @case (5) {
+  <section class="panel-exito">
+    <div class="tarjeta-qr">
+      <h2>¡Compra Exitosa! 🎉</h2>
+      <p>Presentá este código en la entrada del cine y en el Candy Bar.</p>
+
+      <div class="contenedor-qr">
+        <!-- La librería angularx-qrcode hace la magia acá -->
+        <!-- Convertimos el ID a string porque el QRData pide string -->
+        <qrcode [qrdata]="ticketFinalId()?.toString() || ''" [width]="256" [errorCorrectionLevel]="'M'">
+        </qrcode>
+      </div>
+
+      <h3>Ticket #{{ ticketFinalId() }}</h3>
+      <p class="nota-qr">Una vez escaneado, el código dejará de ser válido.</p>
+
+      <button class="btn-volver" routerLink="/">Volver a la Cartelera</button>
+    </div>
+  </section>
+  }
+
+
   }
 </main>
 } @else {

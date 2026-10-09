@@ -1,0 +1,71 @@
+<div class="escaner-container">
+    <h2>Escáner de Entradas 📷</h2>
+
+    <!-- MODO 1: CÁMARA (Solo se ve si no hay ticket escaneado) -->
+    @if (!ticketEscaneado() && !procesando()) {
+    <div class="camera-box">
+        <!-- El componente de la librería. Le pasamos el evento al TS -->
+        <ngx-scanner-qrcode #action="scanner" (event)="onEvent($event, action)"></ngx-scanner-qrcode>
+
+        <div class="camera-controls">
+            <button class="btn-camara" (click)="action.isStart ? action.stop() : action.start()">
+                {{ action.isStart ? '🛑 Apagar Cámara' : '▶️ Encender Cámara' }}
+            </button>
+        </div>
+    </div>
+    }
+
+    @if (procesando()) {
+    <div class="cargando">
+        <h3>🔍 Buscando ticket en la base de datos...</h3>
+    </div>
+    }
+
+    @if (errorMsj()) {
+    <div class="alerta-error">
+        <p>❌ {{ errorMsj() }}</p>
+        <button class="btn-secundario" (click)="volverAEscanear()">Escanear otro</button>
+    </div>
+    }
+
+    <!-- MODO 2: RESULTADO DEL TICKET -->
+    @if (ticketEscaneado()) {
+    <div class="ticket-info">
+        <h3>Ticket #{{ ticketEscaneado().id }}</h3>
+
+        @if (ticketEscaneado().qr_usado) {
+        <div class="alerta-roja">
+            ⚠️ ¡ALERTA FRAUDE! Este ticket YA FUE USADO.
+        </div>
+        } @else {
+        <div class="alerta-verde">
+            ✅ Ticket Válido. Listo para autorizar.
+        </div>
+        }
+
+        <div class="detalles-ticket">
+            <p><strong>Película:</strong> {{ ticketEscaneado().funciones.peliculas.nombre }}</p>
+            <p><strong>Sala:</strong> {{ ticketEscaneado().funciones.salas.nombre }}</p>
+            <p><strong>Butacas:</strong> {{ ticketEscaneado().butacas.join(', ') }}</p>
+
+            <hr>
+            <p><strong>🍿 Entregar en Candy Bar:</strong></p>
+            <ul>
+                @for (item of ticketEscaneado().candy_bar; track item.id) {
+                <li>{{ item.nombre }}</li>
+                } @empty {
+                <li>Sin productos comprados.</li>
+                }
+            </ul>
+        </div>
+
+        <div class="acciones-ticket">
+            <!-- Solo mostramos el botón de quemar si el ticket NO está usado -->
+            @if (!ticketEscaneado().qr_usado) {
+            <button class="btn-quemar" (click)="quemarTicket()">🔥 Quemar Ticket</button>
+            }
+            <button class="btn-secundario" (click)="volverAEscanear()">Escanear otro</button>
+        </div>
+    </div>
+    }
+</div>

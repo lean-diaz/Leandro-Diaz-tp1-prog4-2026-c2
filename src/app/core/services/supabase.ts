@@ -188,6 +188,36 @@ export class SupabaseService {
         return data;
     }
 
+    // --- MÉTODOS PARA EL ESCÁNER QR ---
+
+    async getCompraPorId(ticketId: string) {
+        const { data, error } = await this.supabase
+            .from('compras')
+            .select('*, funciones(*, peliculas(nombre), salas(nombre))') // Traemos info completa para mostrarle al empleado
+            .eq('id', ticketId)
+            .single();
+
+        if (error) {
+            return null;
+        }
+        return data;
+    }
+
+    async quemarTicket(ticketId: string) {
+        const { data, error } = await this.supabase
+            .from('compras')
+            .update({ qr_usado: true })
+            .eq('id', ticketId)
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Error quemando ticket:', error.message);
+            return false;
+        }
+        return true;
+    }
+
 
 
 }

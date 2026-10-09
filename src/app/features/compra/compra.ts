@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { SupabaseService } from '../../core/services/supabase';
+import { QRCodeComponent } from 'angularx-qrcode';
 
 import { PrecioArsPipe } from '../../shared/pipes/precio-ars.pipe';
 import { HighlightButacaDirective } from '../../shared/directives/highlight-butaca.directive';
@@ -9,7 +10,7 @@ import { HighlightButacaDirective } from '../../shared/directives/highlight-buta
 @Component({
   selector: 'app-compra',
   standalone: true,
-  imports: [DatePipe, PrecioArsPipe, HighlightButacaDirective],
+  imports: [DatePipe, PrecioArsPipe, HighlightButacaDirective, QRCodeComponent],
   templateUrl: './compra.html',
   styleUrls: ['./compra.css']
 })
@@ -21,6 +22,7 @@ export class Compra implements OnInit, OnDestroy {
   peliculaSeleccionada = signal<any>(null);
   funciones = signal<any[]>([]);
   funcionSeleccionada = signal<any>(null);
+  ticketFinalId = signal<number | null>(null);
 
   pasoActual = signal<number>(1);
 
@@ -273,10 +275,16 @@ export class Compra implements OnInit, OnDestroy {
       const resultado = await this.supabaseService.registrarCompra(paqueteBD);
 
       if (resultado.exito) {
-        alert(`¡Compra confirmada! Tu número de ticket es el #${resultado.ticket.id}`);
+        // Guardamos el ID del ticket generado
+        this.ticketFinalId.set(resultado.ticket.id);
+        
+        // Limpiamos los carritos
         this.butacasSeleccionadas.set([]);
         this.carritoCandy.set([]);
-        // Acá a futuro podemos navegar a una ruta de "ticket generado"
+        
+        // ¡Avanzamos a la pantalla del QR!
+        this.avanzarPaso(5);
+
       } else {
         // Acá mostramos el mensaje de que le robaron la butaca
         alert(resultado.mensaje);
