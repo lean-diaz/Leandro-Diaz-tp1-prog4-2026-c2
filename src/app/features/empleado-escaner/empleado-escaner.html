@@ -8,10 +8,12 @@
         <ngx-scanner-qrcode #action="scanner" (event)="onEvent($event, action)"></ngx-scanner-qrcode>
 
         <div class="camera-controls">
+            <!-- VOLVEMOS AL START() -->
             <button class="btn-camara" (click)="action.isStart ? action.stop() : action.start()">
                 {{ action.isStart ? '🛑 Apagar Cámara' : '▶️ Encender Cámara' }}
             </button>
         </div>
+
     </div>
     }
 

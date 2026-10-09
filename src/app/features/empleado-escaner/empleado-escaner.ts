@@ -25,11 +25,13 @@ export class EmpleadoEscaner {
 
   // Esta función se dispara SOLA cuando la cámara detecta un QR
   async onEvent(eventosDetectados: any, actionControl: any) {
-    // Si detectó algo y tiene valor
-    if (eventosDetectados && eventosDetectados.length && eventosDetectados[0].value) {
+    // Verificamos que traiga datos válidos y que no estemos ya procesando uno
+    if (eventosDetectados && eventosDetectados.length > 0 && !this.procesando()) {
       
       const qrText = eventosDetectados[0].value;
       
+      if (!qrText) return; // Si leyó basura, ignoramos
+
       // Apagamos la cámara al instante para que no lea 20 veces el mismo QR
       actionControl.stop();
 
