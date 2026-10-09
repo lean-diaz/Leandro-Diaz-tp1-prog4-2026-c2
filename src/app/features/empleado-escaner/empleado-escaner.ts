@@ -1,9 +1,9 @@
 import { Component, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LOAD_WASM, NgxScannerQrcodeComponent } from 'ngx-scanner-qrcode';
+// Sumamos ScannerQRCodeConfig al import
+import { LOAD_WASM, NgxScannerQrcodeComponent, ScannerQRCodeConfig } from 'ngx-scanner-qrcode';
 import { SupabaseService } from '../../core/services/supabase';
 
-// Inicializamos el motor del escáner (Obligatorio para que ande rápido)
 LOAD_WASM().subscribe();
 
 @Component({
@@ -14,33 +14,64 @@ LOAD_WASM().subscribe();
   styleUrls: ['./empleado-escaner.css']
 })
 export class EmpleadoEscaner {
-  // Con esto controlamos el componente del escáner desde el TS
   @ViewChild('action') scanner!: NgxScannerQrcodeComponent;
 
   ticketEscaneado = signal<any>(null);
   errorMsj = signal<string>('');
   procesando = signal<boolean>(false);
+  
+  // NUEVO: Signal para mostrar el error exacto de la cámara
+  camaraError = signal<string>(''); 
+
+  // NUEVO: Configuración para forzar la cámara trasera en la librería
+  config: ScannerQRCodeConfig = {
+    constraints: {
+      video: { facingMode: { ideal: 'environment' } },
+      audio: false
+    }
+  };
 
   constructor(private supabaseService: SupabaseService) {}
 
-  // Esta función se dispara SOLA cuando la cámara detecta un QR
+  // NUEVO MÉTODO: Pide permiso a mano y luego arranca el escáner
+  async encenderCamara() {
+    this.camaraError.set('');
+
+    // Si el navegador no soporta cámaras
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      this.camaraError.set('Tu navegador no permite usar la cámara (Probablemente falte HTTPS o permisos en el sistema).');
+      return;
+    }
+
+    try {
+      // 1. Pedimos permiso forzado al celular
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' },
+        audio: false
+      });
+      
+      // 2. Apagamos este video temporal (para que la librería lo pueda usar)
+      stream.getTracks().forEach(t => t.stop());
+
+      // 3. Encendemos el escáner
+      this.scanner.start();
+    } catch (e: any) {
+      // 4. Si falla, mostramos el error exacto en rojo
+      this.camaraError.set(`Fallo la cámara: ${e.name} - ${e.message}`);
+    }
+  }
+
+  // ... tus métodos onEvent, quemarTicket y volverAEscanear quedan EXACTAMENTE IGUAL.
   async onEvent(eventosDetectados: any, actionControl: any) {
-    // Verificamos que traiga datos válidos y que no estemos ya procesando uno
     if (eventosDetectados && eventosDetectados.length > 0 && !this.procesando()) {
-      
       const qrText = eventosDetectados[0].value;
-      
-      if (!qrText) return; // Si leyó basura, ignoramos
+      if (!qrText) return;
 
-      // Apagamos la cámara al instante para que no lea 20 veces el mismo QR
       actionControl.stop();
-
       this.procesando.set(true);
       this.errorMsj.set('');
 
-      // Vamos a buscar el ticket a la BD
       const ticket = await this.supabaseService.getCompraPorId(qrText);
-
       if (ticket) {
         this.ticketEscaneado.set(ticket);
       } else {
@@ -56,10 +87,8 @@ export class EmpleadoEscaner {
     if (!ticket) return;
 
     const exito = await this.supabaseService.quemarTicket(ticket.id);
-    
     if (exito) {
       alert('¡Ticket quemado y validado con éxito!');
-      // Actualizamos el estado visual para que no lo puedan quemar dos veces
       this.ticketEscaneado.set({ ...ticket, qr_usado: true });
     } else {
       alert('Hubo un error al quemar el ticket.');
@@ -69,7 +98,6 @@ export class EmpleadoEscaner {
   volverAEscanear() {
     this.ticketEscaneado.set(null);
     this.errorMsj.set('');
-    // Volvemos a prender la cámara
-    this.scanner.start();
+    this.encenderCamara();
   }
 }
