@@ -4,8 +4,6 @@ import { CommonModule } from '@angular/common';
 import { LOAD_WASM, NgxScannerQrcodeComponent, ScannerQRCodeConfig } from 'ngx-scanner-qrcode';
 import { SupabaseService } from '../../core/services/supabase';
 
-LOAD_WASM().subscribe();
-
 @Component({
   selector: 'app-empleado-escaner',
   standalone: true,
@@ -33,30 +31,30 @@ export class EmpleadoEscaner {
 
   constructor(private supabaseService: SupabaseService) {}
 
-  // NUEVO MÉTODO: Pide permiso a mano y luego arranca el escáner
   async encenderCamara() {
     this.camaraError.set('');
 
-    // Si el navegador no soporta cámaras
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       this.camaraError.set('Tu navegador no permite usar la cámara (Probablemente falte HTTPS o permisos en el sistema).');
       return;
     }
 
     try {
-      // 1. Pedimos permiso forzado al celular
+      // 1. CARGAMOS EL MOTOR ACÁ ADENTRO (Solo cuando tocamos el botón)
+      LOAD_WASM().subscribe();
+
+      // 2. Pedimos permiso forzado al celular
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'environment' },
         audio: false
       });
       
-      // 2. Apagamos este video temporal (para que la librería lo pueda usar)
+      // 3. Apagamos este video temporal
       stream.getTracks().forEach(t => t.stop());
 
-      // 3. Encendemos el escáner
+      // 4. Encendemos el escáner
       this.scanner.start();
     } catch (e: any) {
-      // 4. Si falla, mostramos el error exacto en rojo
       this.camaraError.set(`Fallo la cámara: ${e.name} - ${e.message}`);
     }
   }
