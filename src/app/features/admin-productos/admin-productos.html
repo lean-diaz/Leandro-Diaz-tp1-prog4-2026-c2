@@ -47,7 +47,7 @@
                     </div>
                 </div>
 
-                
+
 
                 <div class="acciones-form">
                     @if (editandoId()) {
@@ -76,14 +76,11 @@
                 <tbody>
                     @for (prod of productos(); track prod.id) {
                     <tr>
-                        <td>{{ prod.nombre }}</td>
-                        <td><span class="badge">{{ prod.categoria }}</span></td>
-                        <td>${{ prod.precio }} / ⭐{{ prod.costo_en_puntos }}</td>
-
-                        <!-- Mostramos un check verde si incluye entrada, o una X roja si no -->
-                        <td class="text-center">{{ prod.incluye_entrada ? '✅' : '❌' }}</td>
-
-                        <td class="acciones-tabla">
+                        <td data-label="Nombre">{{ prod.nombre }}</td>
+                        <td data-label="Categoría"><span class="badge">{{ prod.categoria }}</span></td>
+                        <td data-label="Precio / Puntos">${{ prod.precio }} / ⭐{{ prod.costo_en_puntos }}</td>
+                        <td data-label="Entrada" class="text-center">{{ prod.incluye_entrada ? '✅' : '❌' }}</td>
+                        <td data-label="Acciones" class="acciones-tabla">
                             <button class="btn-editar" (click)="editarProducto(prod)" title="Editar">✏️</button>
                             <button class="btn-eliminar" (click)="eliminarProducto(prod.id)"
                                 title="Eliminar">🗑️</button>

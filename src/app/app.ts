@@ -1,22 +1,46 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, Router } from '@angular/router'; // Sumamos Router
-import { AuthService } from './core/services/auth.service';
+import { Component, OnInit, signal, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
+import { SupabaseService } from './core/services/supabase';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink], 
+  imports: [CommonModule, RouterOutlet, RouterModule],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
+export class App implements OnInit {
+  private supabaseService = inject(SupabaseService);
+  private router = inject(Router);
 
-export class App { // (O AppComponent, como lo hayas dejado)
-  auth = inject(AuthService); 
-  private router = inject(Router); // Inyectamos el motor de navegación
+  session = signal<any>(null);
+  esAdmin = signal<boolean>(false);
+  esEmpleado = signal<boolean>(false);
 
-  // Nueva función que hace las dos cosas
+  ngOnInit() {
+    this.supabaseService.supabase.auth.onAuthStateChange(async (event, session) => {
+      this.session.set(session);
+      
+      if (session?.user) {
+        const { data } = await this.supabaseService.supabase
+          .from('usuarios')
+          .select('es_admin, es_empleado')
+          .eq('id', session.user.id)
+          .maybeSingle();
+
+        const isAdmin = session.user.email === 'profe@utn.edu.ar' || (data?.es_admin === true);
+        this.esAdmin.set(isAdmin);
+        this.esEmpleado.set((data?.es_empleado === true) || isAdmin);
+      } else {
+        this.esAdmin.set(false);
+        this.esEmpleado.set(false);
+      }
+    });
+  }
+
   async cerrarSesion() {
-    await this.auth.logout();      // 1. Rompe el pase VIP en Supabase
-    this.router.navigate(['/']);   // 2. Te patea a la cartelera
+    await this.supabaseService.supabase.auth.signOut();
+    this.router.navigate(['/']);
   }
 }

@@ -1,8 +1,13 @@
 .admin-layout {
-    display: grid;
-    grid-template-columns: 250px 1fr; /* 250px para el menú, el resto para el contenido */
-    min-height: calc(100vh - 70px); /* Ajusta si tenés una barra superior general */
-    background-color: #0f0f13;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+}
+
+.sidebar {
+    min-width: 0;
+    padding: 0;
+    border-right: none;
+    border-bottom: 1px solid #2a2a35;
 }
 
 /* --- Menú Lateral --- */
@@ -54,6 +59,65 @@
 
 /* --- Área de Contenido --- */
 .admin-content {
-    padding: 2rem;
+    padding: 1.5rem;
     overflow-y: auto;
+    min-width: 0; /* evita que tablas anchas estiren la grilla */
+}
+
+.nav-item {
+    display: block;
+}
+
+@media (hover: none) {
+    .nav-item:hover {
+        background-color: transparent;
+        color: white;
+    }
+}
+
+@media (max-width: 850px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    .sidebar {
+        padding: 0;
+        border-right: none;
+        border-bottom: 1px solid #2a2a35;
+    }
+
+    .sidebar-header {
+        display: none;
+    }
+
+    /* Menú en franja horizontal con scroll */
+    .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-item {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 0.9rem 1rem;
+        font-size: 0.9rem;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+
+    .active-link {
+        border-left: none;
+        border-bottom: 3px solid #e50914;
+    }
+
+    .admin-content {
+        padding: 0.8rem;
+    }
 }

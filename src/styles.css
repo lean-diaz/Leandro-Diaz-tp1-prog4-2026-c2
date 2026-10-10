@@ -6,3 +6,12 @@ body {
     margin: 0;
     padding: 0;
 }
+
+@media (max-width: 850px) {
+    table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}

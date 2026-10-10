@@ -1,25 +1,28 @@
 <nav class="navbar">
-    <!-- Link para volver al inicio -->
-    <a routerLink="/" class="logo">🍿 Cine UTN</a>
+    <div class="nav-brand" routerLink="/">🍿 CINE UTN</div>
 
-    <div class="menu-usuario">
-        <!-- Leemos el Signal de sesión. Si existe, guardamos los datos en 's' -->
-        @if (auth.session(); as s) {
-            <span class="saludo">Hola, {{ s.user.email }}</span>
-            
-            <!-- ACÁ ESTÁ LA MAGIA: Ocultamos solo el botón del admin -->
-            @if (auth.rol() === 'admin') {
-                <a routerLink="/admin" class="btn-admin">Panel Admin</a>
-            }
-            
-            <!-- Botón para cerrar sesión -->
-            <button class="btn-logout" (click)="cerrarSesion()">Salir</button>
+    <div class="nav-links">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Cartelera</a>
+
+        @if (session()) {
+        <a routerLink="/mis-peliculas" routerLinkActive="active">Mis Entradas</a>
+
+        @if (esEmpleado()) {
+        <a routerLink="/escaner" routerLinkActive="active">📷 Escáner QR</a>
+        }
+
+        @if (esAdmin()) {
+        <!-- Ajustá estas rutas a las de tu panel de admin -->
+        <a routerLink="/admin" routerLinkActive="active">⚙️ Panel Admin</a>
+        }
+
+        <button class="btn-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
         } @else {
-            <!-- Si no hay sesión, mostramos el botón de OAuth -->
-            <button class="btn-login" (click)="auth.login()">Entrar con GitHub</button>
+        <a routerLink="/login" class="btn-login" routerLinkActive="active">Iniciar Sesión</a>
         }
     </div>
 </nav>
 
-<!-- Acá abajo es donde Angular dibuja la Cartelera, las Butacas, etc. -->
-<router-outlet></router-outlet>
+<main class="main-content">
+    <router-outlet></router-outlet>
+</main>

@@ -63,6 +63,8 @@
     flex-wrap: wrap;
     gap: 15px;
     margin-top: 20px;
+    align-items: flex-start;
+    align-content: flex-start;
 }
 
 .btn-funcion {
@@ -634,4 +636,449 @@
     font-size: 0.85rem !important;
     color: #444 !important;
     font-style: italic;
+}
+
+.seccion-resenas {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #333;
+}
+
+.lista-resenas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 1rem;
+}
+
+.tarjeta-resena {
+    background-color: #1a1a1a;
+    padding: 14px;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+}
+
+.resena-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.resena-header strong {
+    color: #ddd;
+}
+
+.estrellas {
+    color: #ffc107;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.resena-comentario {
+    margin: 0;
+    color: #aaa;
+    font-style: italic;
+    word-break: break-word;
+}
+
+.resena-fecha {
+    color: #777;
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 10px;
+}
+
+.sin-resenas {
+    color: #888;
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+
+
+@media (max-width: 850px) {
+    .contenedor-compra {
+        flex-direction: column;
+        gap: 1.2rem;
+        margin: 12px auto;
+        padding: 12px;
+    }
+
+    .resumen-pelicula {
+        flex: none;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 14px;
+        align-items: start;
+        padding: 14px;
+    }
+
+    .resumen-pelicula .detalles {
+        margin-top: 0;
+    }
+
+    .resumen-pelicula .detalles h2 {
+        margin: 0 0 6px;
+        font-size: 1.15rem;
+    }
+
+    .resumen-pelicula .detalles p {
+        margin: 0 0 6px;
+        font-size: 0.85rem;
+    }
+
+    /* La sinopsis se corta a 5 líneas para que no ocupe media pantalla */
+    .resumen-pelicula .detalles p:last-child {
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        line-clamp: 5;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .panel-seleccion {
+        flex: none;
+        width: 100%;
+    }
+
+    .grilla-funciones {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
+    }
+
+    .btn-funcion {
+        padding: 12px 8px;
+    }
+
+    .btn-funcion .hora {
+        font-size: 1.3rem;
+    }
+
+    .confirmacion-horario {
+        text-align: center;
+    }
+
+    .btn-continuar {
+        width: 100%;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .grilla-funciones {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .resumen-pelicula {
+        grid-template-columns: 90px 1fr;
+    }
+}
+
+
+/* ===== BASE (desktop): arreglos de desborde ===== */
+.panel-butacas,
+.panel-candy,
+.panel-pago {
+    flex: 2;
+    min-width: 0;
+}
+
+.panel-butacas {
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.hint-scroll {
+    display: none;
+}
+
+/* Sin esto, el mapa centrado se corta a la izquierda al hacer scroll */
+.mapa-sala {
+    align-items: stretch;
+}
+
+.fila-butacas {
+    width: max-content;
+    margin: 0 auto;
+}
+
+/* Letras de fila fijas al deslizar */
+.fila-butacas .letra-fila:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: white;
+}
+
+/* Checkout: Club arriba a todo el ancho, ticket y pago lado a lado */
+.contenedor-checkout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.contenedor-checkout>* {
+    min-width: 0;
+}
+
+.caja-fidelizacion {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin: 0;
+}
+
+.campo input {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Hover solo en dispositivos con mouse */
+@media (hover: none) {
+    .butaca:hover { background-color: #007bff; }
+    .butaca.vip:hover { background-color: #ffc107; }
+    .butaca.accesible:hover { background-color: #17a2b8; }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 850px) {
+
+    /* Pasos 2-4: solo póster + título, sin sinopsis */
+    .paso-avanzado .resumen-pelicula .detalles p:last-child {
+        display: none;
+    }
+
+    /* Paneles */
+    .panel-butacas,
+    .panel-candy {
+        flex: none;
+        width: 100%;
+        padding: 14px;
+    }
+
+    .panel-pago {
+        flex: none;
+        width: 100%;
+    }
+
+    /* --- Paso 2: butacas --- */
+    .pantalla-cine {
+        width: 90%;
+        margin-bottom: 12px;
+        letter-spacing: 3px;
+    }
+
+    .hint-scroll {
+        display: block;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #777;
+        margin: 0 0 12px;
+    }
+
+    .fila-butacas {
+        gap: 4px;
+        margin: 0;
+    }
+
+    .butaca {
+        width: 30px;
+        height: 30px;
+    }
+
+    .butaca:nth-of-type(4),
+    .butaca:nth-of-type(24) {
+        margin-right: 14px;
+    }
+
+    /* --- Barra fija de total (pasos 2 y 3) --- */
+    .resumen-compra {
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        margin: 16px -14px -14px;
+        padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
+        background: white;
+        border-top: 1px solid #ddd;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        align-items: stretch;
+        gap: 4px;
+    }
+
+    .resumen-compra p,
+    .resumen-compra h3 {
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    .btn-pagar {
+        width: 100%;
+        padding: 13px;
+        margin-top: 6px;
+    }
+
+    /* --- Paso 3: candy en filas horizontales --- */
+    .grilla-productos {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .tarjeta-producto {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        column-gap: 12px;
+        align-items: center;
+        text-align: left;
+        padding: 12px 14px;
+    }
+
+    .tarjeta-producto h4,
+    .tarjeta-producto .categoria,
+    .tarjeta-producto .precio {
+        grid-column: 1;
+        margin: 0;
+    }
+
+    .tarjeta-producto .precio {
+        font-size: 1.1rem;
+    }
+
+    .controles-candy {
+        grid-column: 2;
+        grid-row: 1 / span 3;
+        margin: 0;
+        gap: 10px;
+    }
+
+    .controles-candy button {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* --- Paso 4: checkout en una columna --- */
+    .contenedor-checkout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .caja-fidelizacion {
+        grid-row: auto;
+        order: 2;
+    }
+
+    .ticket-resumen {
+        order: 1;
+        padding: 18px;
+    }
+
+    .formulario-tarjeta {
+        order: 3;
+        padding: 18px;
+    }
+
+    .campo input,
+    .caja-cupon input {
+        font-size: 16px; /* evita el zoom automático de iOS */
+    }
+
+    .btn-aplicar {
+        padding: 8px 14px;
+    }
+
+    .total-destacado {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .fila-campos {
+        gap: 10px;
+    }
+}
+
+
+/* ===== PASO 5: ÉXITO ===== */
+.panel-exito {
+    flex: 2;
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.tarjeta-qr {
+    width: 100%;
+    background: white;
+    color: #333;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.tarjeta-qr h2,
+.tarjeta-qr h3,
+.tarjeta-qr p {
+    color: #333;
+}
+
+.contenedor-qr {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.contenedor-qr qrcode {
+    display: block;
+    max-width: 100%;
+    padding: 12px;
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+}
+
+.contenedor-qr ::ng-deep canvas,
+.contenedor-qr ::ng-deep img,
+.contenedor-qr ::ng-deep svg {
+    max-width: 100%;
+    height: auto !important;
+    display: block;
+}
+
+.nota-qr {
+    font-size: 0.9rem;
+    color: #777 !important;
+}
+
+.btn-volver {
+    margin-top: 16px;
+    background-color: #e50914;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-volver:hover {
+    background-color: #b20710;
+}
+
+@media (max-width: 850px) {
+    .panel-exito {
+        flex: none;
+        width: 100%;
+    }
+
+    .tarjeta-qr {
+        padding: 18px;
+    }
+
+    .btn-volver {
+        width: 100%;
+    }
 }

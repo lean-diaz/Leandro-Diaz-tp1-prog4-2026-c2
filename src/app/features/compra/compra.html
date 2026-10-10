@@ -1,5 +1,5 @@
 @if (peliculaSeleccionada()) {
-<main class="contenedor-compra">
+<main class="contenedor-compra" [class.paso-avanzado]="pasoActual() > 1">
 
   <section class="resumen-pelicula">
     <img [src]="peliculaSeleccionada().imagen_url" alt="Poster">
@@ -15,6 +15,7 @@
   @case (1) {
   <section class="panel-seleccion">
     <h2>Paso 1: Selección de Función</h2>
+
     <div class="grilla-funciones">
       @for (funcion of funciones(); track funcion.id) {
       <button class="btn-funcion" [class.seleccionado]="funcionSeleccionada()?.id === funcion.id"
@@ -26,41 +27,6 @@
       } @empty {
       <p>No hay funciones programadas.</p>
       }
-
-      <!-- SECCIÓN DE RESEÑAS -->
-      <section class="seccion-resenas" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #333;">
-        <h3>Opiniones de los espectadores</h3>
-
-        @if (resenasPelicula().length > 0) {
-        <div class="lista-resenas" style="display: flex; flex-direction: column; gap: 15px; margin-top: 1rem;">
-          @for (resena of resenasPelicula(); track resena.id) {
-
-          <div class="tarjeta-resena"
-            style="background-color: #1a1a1a; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
-            <div class="resena-header" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-              <strong style="color: #ddd;">Espectador</strong>
-              <span class="estrellas" style="color: #ffc107; font-weight: bold;">
-                <!-- Dibujamos las estrellas matemáticas (ej: 4/5) -->
-                {{ resena.estrellas }} / 5 ⭐️
-              </span>
-            </div>
-
-            @if (resena.comentario) {
-            <p style="margin: 0; color: #aaa; font-style: italic;">"{{ resena.comentario }}"</p>
-            }
-            <small style="color: #666; font-size: 0.8rem; display: block; margin-top: 10px;">
-              {{ resena.fecha | date:'dd/MM/yyyy' }}
-            </small>
-          </div>
-
-          }
-        </div>
-        } @else {
-        <p style="color: #888; font-style: italic; margin-top: 1rem;">
-          Nadie dejó una opinión sobre esta película todavía. ¡Sé el primero!
-        </p>
-        }
-      </section>
     </div>
 
     @if (funcionSeleccionada()) {
@@ -68,6 +34,31 @@
       <button class="btn-continuar" (click)="avanzarPaso(2)">Continuar a Butacas</button>
     </div>
     }
+
+    <!-- OPINIONES (ahora fuera de la grilla) -->
+    <section class="seccion-resenas">
+      <h3>Opiniones de los espectadores</h3>
+
+      @if (resenasPelicula().length > 0) {
+      <div class="lista-resenas">
+        @for (resena of resenasPelicula(); track resena.id) {
+        <div class="tarjeta-resena">
+          <div class="resena-header">
+            <strong>Espectador</strong>
+            <span class="estrellas">{{ resena.estrellas }} / 5 ⭐️</span>
+          </div>
+
+          @if (resena.comentario) {
+          <p class="resena-comentario">"{{ resena.comentario }}"</p>
+          }
+          <small class="resena-fecha">{{ resena.fecha | date:'dd/MM/yyyy' }}</small>
+        </div>
+        }
+      </div>
+      } @else {
+      <p class="sin-resenas">Nadie dejó una opinión sobre esta película todavía. ¡Sé el primero!</p>
+      }
+    </section>
   </section>
   }
 
@@ -75,6 +66,7 @@
   <section class="panel-butacas">
     <h2>Paso 2: Elegí tus Butacas</h2>
     <div class="pantalla-cine">PANTALLA</div>
+    <p class="hint-scroll">↔ Deslizá para ver toda la sala</p>
 
     <div class="mapa-sala">
       @for (fila of filas; track fila) {

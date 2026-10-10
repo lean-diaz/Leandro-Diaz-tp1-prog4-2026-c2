@@ -1,14 +1,64 @@
-/* Agregá esto al final del CSS de admin-usuarios */
-.mini-poster {
-    width: 40px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
+.admin-container { padding: 0; color: white; }
+
+h2 { color: #e50914; margin-bottom: 0.5rem; }
+.subtitle { color: #a0a0a0; margin-bottom: 1.5rem; }
+.loading { text-align: center; color: #a0a0a0; padding: 2rem; }
+
+.btn-programar { margin-bottom: 1.5rem; }
+
+/* Formulario */
+.formulario-admin {
+    background-color: #1c1c24;
+    border: 1px solid #2a2a35;
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
 }
 
-.resaltado {
-    font-weight: bold;
+.formulario-admin h3 { margin-top: 0; }
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.input-form {
+    width: 100%;
+    min-width: 0;
+    padding: 0.7rem;
+    background-color: #141419;
     color: white;
+    border: 1px solid #333;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.input-form:focus { outline: none; border-color: #e50914; }
+
+/* Tabla */
+.table-responsive {
+    overflow-x: auto;
+    background-color: #1c1c24;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.tabla-admin { width: 100%; border-collapse: collapse; text-align: left; }
+
+.tabla-admin th {
+    background-color: #141419;
+    color: #a0a0a0;
+    padding: 1rem;
+    font-size: 0.9rem;
+    border-bottom: 2px solid #2a2a35;
+}
+
+.tabla-admin td {
+    padding: 1rem;
+    border-bottom: 1px solid #2a2a35;
+    vertical-align: middle;
 }
 
 .badge {
@@ -17,4 +67,53 @@
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: bold;
+}
+
+.resaltado { font-weight: bold; color: white; }
+.hora-fin { color: #ff4d4d; font-weight: bold; }
+
+@media (max-width: 850px) {
+    h2 { font-size: 1.4rem; }
+    .subtitle { font-size: 0.9rem; }
+
+    .btn-programar,
+    .formulario-admin .btn-success { width: 100%; }
+
+    .form-grid { grid-template-columns: 1fr; }
+    .input-form { font-size: 16px; }
+
+    .table-responsive { background: transparent; box-shadow: none; overflow-x: visible; }
+
+    .tabla-admin thead { display: none; }
+
+    .tabla-admin,
+    .tabla-admin tbody,
+    .tabla-admin tr,
+    .tabla-admin td { display: block; width: 100%; }
+
+    .tabla-admin tr {
+        background-color: #1c1c24;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 6px 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .tabla-admin td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 0.6rem 1rem;
+        border-bottom: none;
+        text-align: right;
+    }
+
+    .tabla-admin td::before {
+        content: attr(data-label);
+        color: #a0a0a0;
+        font-size: 0.8rem;
+        text-align: left;
+        flex-shrink: 0;
+    }
 }

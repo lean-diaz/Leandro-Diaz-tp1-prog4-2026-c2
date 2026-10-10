@@ -1,17 +1,14 @@
-.admin-container {
-    padding: 2rem;
-    color: white;
-}
+.admin-container { padding: 0; color: white; }
 
-.chart-container {
-    background-color: #1a1a24;
-    /* Fondo oscuro tipo panel */
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-top: 2rem;
-    /* Controlamos el tamaño para que no se desborde */
-    position: relative;
-    height: 400px;
-    width: 100%;
+.acciones-export { margin: 1.5rem 0; display: flex; flex-wrap: wrap; gap: 1rem; }
+
+.loading { color: white; margin-top: 2rem; }
+
+.chart-container { min-width: 0; }
+
+@media (max-width: 850px) {
+    .acciones-export { flex-direction: column; gap: 0.6rem; }
+    .acciones-export button { width: 100%; padding: 0.8rem; }
+
+    .chart-container { height: 300px; padding: 0.8rem; margin-top: 1rem; }
 }

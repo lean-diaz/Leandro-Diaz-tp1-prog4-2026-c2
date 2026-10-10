@@ -146,3 +146,40 @@ h2 {
     background-color: #3395ff;
     box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
 }
+
+
+/* Sin esto, el mapa centrado se corta a la izquierda al hacer scroll */
+.sala-container { align-items: stretch; }
+.pantalla { margin-left: auto; margin-right: auto; }
+
+.grilla-butacas { width: max-content; margin: 0 auto; }
+
+.hint-scroll { display: none; }
+
+@media (hover: none) {
+    .asiento:hover { transform: none; }
+}
+
+@media (max-width: 850px) {
+    .admin-container { padding: 0; }
+    h2 { font-size: 1.3rem; }
+    .subtitle { margin-bottom: 1rem; }
+
+    .leyenda { gap: 0.8rem 1.2rem; padding: 1rem; margin-bottom: 1rem; }
+    .item { font-size: 0.85rem; }
+
+    .sala-container { padding: 1.5rem 0.8rem; }
+
+    .pantalla { letter-spacing: 5px; margin-bottom: 1rem; }
+
+    .hint-scroll {
+        display: block;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #888;
+        margin: 0 0 1rem;
+    }
+
+    .fila { gap: 0.8rem; }
+    .asiento { width: 30px; height: 30px; }
+}

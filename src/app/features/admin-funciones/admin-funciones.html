@@ -3,7 +3,7 @@
     <p class="subtitle">Gestión inteligente de horarios (con prevención de solapamientos).</p>
 
     <!-- Botón para abrir formulario -->
-    <button class="btn-primary" (click)="mostrarFormulario.set(!mostrarFormulario())" style="margin-bottom: 1.5rem;">
+    <button class="btn-primary btn-programar" (click)="mostrarFormulario.set(!mostrarFormulario())">
         {{ mostrarFormulario() ? 'Cancelar' : '+ Programar Función' }}
     </button>
 
@@ -17,8 +17,8 @@
             <select [(ngModel)]="nuevaFuncion.pelicula_id" class="input-form">
                 <option value="">Seleccionar Película...</option>
                 @for (p of peliculas(); track p.id) {
-                    <!-- El [ngValue] asegura que se pase el número correcto -->
-                    <option [ngValue]="p.id">{{ p.nombre }} ({{ p.duracion_min }} min)</option> 
+                <!-- El [ngValue] asegura que se pase el número correcto -->
+                <option [ngValue]="p.id">{{ p.nombre }} ({{ p.duracion_min }} min)</option>
                 }
             </select>
 
@@ -60,11 +60,11 @@
             <tbody>
                 @for (f of funciones(); track f.id) {
                 <tr>
-                    <td><span class="badge">Sala {{ f.sala_id }}</span></td>
-                    <td class="resaltado">{{ f.peliculas?.nombre }}</td>
-                    <td>{{ f.fecha_hora | date:'dd/MM/yyyy HH:mm' }}</td>
-                    <td style="color: #ff4d4d; font-weight: bold;">{{ f.fecha_hora_fin | date:'HH:mm' }}</td>
-                    <td>${{ f.precio_base }}</td>
+                    <td data-label="Sala"><span class="badge">Sala {{ f.sala_id }}</span></td>
+                    <td data-label="Película" class="resaltado">{{ f.peliculas?.nombre }}</td>
+                    <td data-label="Inicio">{{ f.fecha_hora | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td data-label="Fin" class="hora-fin">{{ f.fecha_hora_fin | date:'HH:mm' }}</td>
+                    <td data-label="Precio">${{ f.precio_base }}</td>
                 </tr>
                 }
             </tbody>

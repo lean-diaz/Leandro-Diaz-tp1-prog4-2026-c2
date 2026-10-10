@@ -1,72 +1,110 @@
+/* NAVBAR BASE */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 30px;
-    background-color: #1a1a1a;
-    color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background-color: #111;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 2px solid #222;
 }
 
-.logo {
+.nav-brand {
+    color: #ffc107;
     font-size: 1.5rem;
-    font-weight: bold;
-    color: #e50914; /* Rojo tipo Netflix */
-    text-decoration: none;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.menu-usuario {
+/* CONTENEDOR DE LINKS */
+.nav-links {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 1.5rem;
 }
 
-.saludo {
-    font-size: 0.9rem;
-    color: #ccc;
-}
-
-.btn-admin {
-    background-color: transparent;
+.nav-links a {
     color: #fff;
     text-decoration: none;
-    border: 1px solid #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    transition: all 0.2s;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: color 0.3s;
 }
 
-.btn-admin:hover {
-    background-color: white;
-    color: #1a1a1a;
+.nav-links a:hover {
+    color: #ffc107;
 }
 
+/* EFECTO LINK ACTIVO (Dónde estoy parado) */
+.nav-links a.active {
+    color: #ffc107;
+    border-bottom: 2px solid #ffc107;
+}
+
+/* BOTONES ESPECIALES */
 .btn-login {
-    background-color: #24292e; /* Color oscuro de GitHub */
-    color: white;
-    border: none;
-    padding: 8px 15px;
+    background-color: #ffc107;
+    color: #111 !important;
+    padding: 0.5rem 1.2rem !important;
     border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s;
+    font-weight: bold !important;
 }
 
 .btn-login:hover {
-    background-color: #000;
+    background-color: #e0a800;
+    transform: translateY(-2px);
 }
 
 .btn-logout {
-    background-color: #dc3545; /* Rojo de salir */
-    color: white;
-    border: none;
-    padding: 8px 15px;
+    background: transparent;
+    color: #ff4444;
+    border: 1px solid #ff4444;
+    padding: 0.5rem 1rem;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: all 0.3s;
 }
 
 .btn-logout:hover {
-    background-color: #c82333;
+    background-color: #ff4444;
+    color: #fff;
+}
+
+.main-content {
+    min-height: 85vh;
+    padding-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+        gap: 0.6rem;
+    }
+
+    .nav-brand {
+        font-size: 1.3rem;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        gap: 0.4rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .nav-links a {
+        padding: 0.3rem 0;
+    }
+
+    .btn-logout {
+        padding: 0.3rem 0.8rem;
+    }
 }

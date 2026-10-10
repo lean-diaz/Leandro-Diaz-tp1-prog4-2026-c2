@@ -3,7 +3,7 @@
     <p class="subtitle">Gestión de la cartelera y restricciones.</p>
 
     <!-- BOTÓN PARA ABRIR/CERRAR FORMULARIO -->
-    <button class="btn-primary" (click)="mostrarFormulario.set(!mostrarFormulario())" style="margin-bottom: 1.5rem;">
+    <button class="btn-primary btn-programar" (click)="mostrarFormulario.set(!mostrarFormulario())">
         {{ mostrarFormulario() ? 'Cancelar' : '+ Agregar Película' }}
     </button>
 
@@ -60,12 +60,12 @@
             <tbody>
                 @for (peli of peliculas(); track peli.id) {
                 <tr>
-                    <td><img [src]="peli.imagen_url" alt="Poster" class="mini-poster"></td>
-                    <td class="resaltado">{{ peli.nombre }}</td>
-                    <td>{{ peli.duracion_min }} min</td>
-                    <td><span class="badge">{{ peli.clasificacion }}</span></td>
-                    <td>{{ peli.formatos ? peli.formatos.join(', ') : 'N/A' }}</td>
-                    <td><button class="btn-secondary">Editar</button></td>
+                    <td data-label="Póster"><img [src]="peli.imagen_url" alt="Poster" class="mini-poster"></td>
+                    <td data-label="Nombre" class="resaltado">{{ peli.nombre }}</td>
+                    <td data-label="Duración">{{ peli.duracion_min }} min</td>
+                    <td data-label="Clasificación"><span class="badge">{{ peli.clasificacion }}</span></td>
+                    <td data-label="Formatos">{{ peli.formatos ? peli.formatos.join(', ') : 'N/A' }}</td>
+                    <td data-label="Acciones"><button type="button" class="btn-secondary">Editar</button></td>
                 </tr>
                 }
             </tbody>
