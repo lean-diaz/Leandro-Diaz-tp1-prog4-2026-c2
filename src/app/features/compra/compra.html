@@ -26,6 +26,41 @@
       } @empty {
       <p>No hay funciones programadas.</p>
       }
+
+      <!-- SECCIÓN DE RESEÑAS -->
+      <section class="seccion-resenas" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #333;">
+        <h3>Opiniones de los espectadores</h3>
+
+        @if (resenasPelicula().length > 0) {
+        <div class="lista-resenas" style="display: flex; flex-direction: column; gap: 15px; margin-top: 1rem;">
+          @for (resena of resenasPelicula(); track resena.id) {
+
+          <div class="tarjeta-resena"
+            style="background-color: #1a1a1a; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+            <div class="resena-header" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <strong style="color: #ddd;">Espectador</strong>
+              <span class="estrellas" style="color: #ffc107; font-weight: bold;">
+                <!-- Dibujamos las estrellas matemáticas (ej: 4/5) -->
+                {{ resena.estrellas }} / 5 ⭐️
+              </span>
+            </div>
+
+            @if (resena.comentario) {
+            <p style="margin: 0; color: #aaa; font-style: italic;">"{{ resena.comentario }}"</p>
+            }
+            <small style="color: #666; font-size: 0.8rem; display: block; margin-top: 10px;">
+              {{ resena.fecha | date:'dd/MM/yyyy' }}
+            </small>
+          </div>
+
+          }
+        </div>
+        } @else {
+        <p style="color: #888; font-style: italic; margin-top: 1rem;">
+          Nadie dejó una opinión sobre esta película todavía. ¡Sé el primero!
+        </p>
+        }
+      </section>
     </div>
 
     @if (funcionSeleccionada()) {
@@ -139,8 +174,52 @@
         </div>
         <hr>
 
-        <h3 class="total-destacado">Total a Pagar: {{ totalPagar() | precioArs }}</h3>
+
+        <div class="ticket-total">
+
+          @if (esPreventa()) {
+          <div class="aviso-preventa">
+            ¡TICKET PREVENTA! (20% OFF) 🎟️
+          </div>
+
+          <p class="subtotal-anterior">
+            Precio antes de preventa:
+            {{ (totalPagar() / 0.80) | precioArs }}
+          </p>
+
+          <p class="descuento-preventa">
+            Descuento de preventa: -20%
+          </p>
+          }
+
+          <h3>Total a Pagar:</h3>
+          <h2 class="total-destacado">
+            {{ totalPagar() | precioArs }}
+          </h2>
+
+        </div>
+
       </div>
+
+      <!-- CAJA DORADA DE FIDELIZACIÓN -->
+      <div class="caja-fidelizacion">
+        <h3>⭐️ Club de Beneficios</h3>
+        <p>Tenés <strong>{{ puntosUsuario() }}</strong> puntos disponibles (1 punto = $1).</p>
+
+        @if (puntosUsuario() >= totalPagar() && totalPagar() > 0) {
+        <div class="alerta-puntos">
+          <p>¡Tenés suficientes puntos para canjear esta compra gratis!</p>
+          <button class="btn-pagar-puntos" (click)="finalizarCompra('puntos')">
+            🎁 Pagar con Puntos (Canjear {{ totalPagar() }} pts)
+          </button>
+        </div>
+        } @else {
+        <p class="falta-puntos">
+          Te faltan {{ totalPagar() - puntosUsuario() }} puntos para que esta compra te salga gratis.
+        </p>
+        }
+      </div>
+
 
       <div class="formulario-tarjeta">
         <h3>Datos de Pago</h3>
@@ -162,7 +241,7 @@
             <input type="text" placeholder="123" maxlength="3">
           </div>
         </div>
-        <button class="btn-confirmar-pago" (click)="finalizarCompra()">
+        <button class="btn-confirmar-pago" (click)="finalizarCompra('tarjeta')">
           Efectuar Pago
         </button>
       </div>

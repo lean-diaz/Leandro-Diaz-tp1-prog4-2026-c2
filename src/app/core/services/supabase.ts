@@ -121,7 +121,25 @@ export class SupabaseService {
         return true;
     }
 
-    async registrarCompra(compra: any): Promise<{ exito: boolean; ticket?: any; mensaje?: string }> {
+    // --- SISTEMA DE PUNTOS ---
+    async getPuntosUsuario(usuarioId: string): Promise<number> {
+        if (!usuarioId) return 0;
+
+        const { data, error } = await this.supabase
+            .from('usuarios')
+            .select('puntos')
+            .eq('id', usuarioId)
+            .maybeSingle();
+
+        if (error) {
+            console.error('Error leyendo puntos:', error.message);
+            return 0;
+        }
+
+        return data ? (Number(data.puntos) || 0) : 0;
+    }
+
+    async registrarCompra(compra: any, metodoPago: 'tarjeta' | 'puntos' = 'tarjeta'): Promise<{ exito: boolean; ticket?: any; mensaje?: string }> {
         try {
             // 1. Obtenemos el usuario logueado
             const { data: authData } = await this.supabase.auth.getUser();
@@ -142,7 +160,38 @@ export class SupabaseService {
 
             if (error) throw error;
 
-            // 4. Devolvemos el objeto tal cual lo espera el componente
+            // --- 4. NUEVA LÓGICA DE FIDELIZACIÓN (PUNTOS) ---
+            if (usuarioId) {
+                const totalGastado = Number(compra.total_pagado || compra.total || 0);
+
+                if (totalGastado > 0) {
+                    const { data: usuarioExistente } = await this.supabase
+                        .from('usuarios')
+                        .select('puntos')
+                        .eq('id', usuarioId)
+                        .maybeSingle();
+
+                    // Si por alguna razón el trigger no actuó (usuarios viejos), asumimos 0
+                    let puntosActuales = usuarioExistente ? (Number(usuarioExistente.puntos) || 0) : 0;
+                    let nuevosPuntos = puntosActuales;
+
+                    if (metodoPago === 'tarjeta') {
+                        nuevosPuntos += Math.round(totalGastado * 0.10);
+                    } else if (metodoPago === 'puntos') {
+                        nuevosPuntos -= totalGastado;
+                    }
+
+                    // Ahora solo hacemos UPDATE de manera segura
+                    await this.supabase
+                        .from('usuarios')
+                        .update({ puntos: nuevosPuntos })
+                        .eq('id', usuarioId);
+                }
+            }
+            // ------------------------------------------------
+            // ------------------------------------------------
+
+            // 5. Devolvemos el objeto tal cual lo espera el componente
             return {
                 exito: true,
                 ticket: data
@@ -286,6 +335,46 @@ export class SupabaseService {
             console.error('Error en la cancelación:', error.message);
             return { exito: false, mensaje: error.message };
         }
+    }
+
+
+
+    // ==========================================
+    // --- SISTEMA DE RESEÑAS Y CALIFICACIONES ---
+    // ==========================================
+
+    async getResenasPelicula(peliculaId: number) {
+        // Traemos las reseñas filtradas por película sin el JOIN problemático
+        const { data, error } = await this.supabase
+            .from('resenas')
+            .select('id, estrellas, comentario, fecha')
+            .eq('pelicula_id', peliculaId)
+            .order('fecha', { ascending: false });
+
+        if (error) {
+            console.error('Error al cargar las reseñas:', error.message);
+            return [];
+        }
+
+        return data;
+    }
+
+    async agregarResena(peliculaId: number, usuarioId: string, estrellas: number, comentario: string) {
+        const { error } = await this.supabase
+            .from('resenas')
+            .insert({
+                pelicula_id: peliculaId,
+                usuario_id: usuarioId,
+                estrellas: estrellas,
+                comentario: comentario
+            });
+
+        if (error) {
+            console.error('Error al guardar la reseña:', error.message);
+            return { exito: false, mensaje: error.message };
+        }
+
+        return { exito: true };
     }
 
 

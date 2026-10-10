@@ -66,4 +66,52 @@ export class MisPeliculas implements OnInit {
   }
 
 
+  // 1. HELPER: Averigua si la película ya pasó
+  esFuncionPasada(fechaHora: string): boolean {
+    const fechaFuncion = new Date(fechaHora);
+    const ahora = new Date();
+    return fechaFuncion < ahora;
+  }
+
+  // 2. MÉTODO DE RESEÑA: Usa prompts nativos para hacerlo rápido
+  async dejarResena(compra: any) {
+    const userId = this.usuarioLogueadoId();
+    if (!userId) return;
+
+    // --- EL ARREGLO ESTÁ ACÁ ---
+    // Buscamos el ID de la peli en las diferentes estructuras posibles que devuelve Supabase
+    const peliculaId = compra.funciones?.peliculas?.id || compra.funciones?.pelicula?.id || compra.funciones?.pelicula_id;
+    const peliculaNombre = compra.funciones?.peliculas?.nombre || compra.funciones?.pelicula?.nombre || 'esta película';
+    
+
+    if (!peliculaId) {
+      console.error('Estructura de la compra:', compra);
+      alert('Error interno: No se pudo identificar la película para dejar la reseña. Revisá la consola.');
+      return;
+    }
+    // --------------------------
+
+    const estrellasStr = prompt(`Del 1 al 5, ¿cuántas estrellas le darías a ${peliculaNombre}?`);
+    if (!estrellasStr) return; 
+
+    const estrellas = parseInt(estrellasStr, 10);
+    if (isNaN(estrellas) || estrellas < 1 || estrellas > 5) {
+      alert('Por favor, ingresá un número válido del 1 al 5.');
+      return;
+    }
+
+    const comentario = prompt(`(Opcional) Dejá un breve comentario sobre ${peliculaNombre}:`);
+
+    this.cargando.set(true);
+    const resultado = await this.supabaseService.agregarResena(peliculaId, userId, estrellas, comentario || '');
+    this.cargando.set(false);
+
+    if (resultado.exito) {
+      alert('¡Gracias por tu reseña! Ya está visible para otros usuarios.');
+    } else {
+      alert('Hubo un error al guardar la reseña: ' + resultado.mensaje);
+    }
+  }
+
+
 }

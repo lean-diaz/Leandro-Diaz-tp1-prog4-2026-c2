@@ -60,13 +60,13 @@
 .info-peli {
     padding: 1.2rem 1rem;
     text-align: center;
-    /* Un degradado sutil de fondo para integrar mejor el texto */
     background: linear-gradient(to top, #141419, #1c1c24); 
-    /* Aseguramos que el contenedor ocupe el resto del espacio si las imágenes varían */
     flex-grow: 1; 
     display: flex;
-    align-items: center;
+    flex-direction: column; /* <-- Pone el título arriba y el badge abajo */
+    align-items: center;    /* Centra horizontalmente ambos elementos */
     justify-content: center;
+    gap: 0.6rem;            /* Espacio limpio entre el h3 y el span */
 }
 
 .info-peli h3 {
@@ -79,4 +79,16 @@
     line-clamp: 2;         /* <--- Agregá solo esta línea y VS Code se calma */
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-bottom: 0.8rem;
+}
+
+
+.badge-warning {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #ffc107;
+    color: #000;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.85rem;
 }

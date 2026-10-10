@@ -1,20 +1,80 @@
 <div class="home-container">
+
+    <!-- SECCIÓN: CARTELERA ACTUAL -->
     <h1 class="titulo-cartelera">Cartelera de Cine</h1>
 
-    <!-- Grilla Responsive -->
-    <div class="peliculas-grid">
+    @if (peliculasCartelera.length > 0) {
+        <div class="peliculas-grid">
 
-        <!-- El bucle de Angular adaptado a tus variables -->
-        @for (pelicula of cartelera; track pelicula.id) {
-        
-            <div class="pelicula-card" [routerLink]="['/compra', pelicula.id]">
-                <img [src]="pelicula.imagen_url" [alt]="pelicula.nombre" class="poster">
-                
-                <div class="info-peli">
-                    <h3>{{ pelicula.nombre }}</h3>
+            @for (pelicula of peliculasCartelera; track pelicula.id) {
+                <div
+                    class="pelicula-card"
+                    [routerLink]="['/compra', pelicula.id]"
+                >
+                    <img
+                        [src]="pelicula.imagen_url"
+                        [alt]="pelicula.nombre"
+                        class="poster"
+                    >
+
+                    <div class="info-peli">
+                        <h3>{{ pelicula.nombre }}</h3>
+                    </div>
                 </div>
+            }
+
+        </div>
+    } @else {
+        <p class="mensaje-vacio">
+            No hay películas disponibles en cartelera por el momento.
+        </p>
+    }
+
+
+    <!-- SECCIÓN: PRÓXIMAMENTE -->
+    @if (peliculasProximamente.length > 0) {
+
+        <section class="proximamente-section">
+
+            <h2>Próximamente en Cines 🍿</h2>
+
+            <p class="subtitle">
+                Anticipate a los grandes estrenos.
+            </p>
+
+            <div class="peliculas-grid">
+
+                @for (peli of peliculasProximamente; track peli.id) {
+
+                    <div class="pelicula-card pelicula-proximamente">
+
+                        <img
+                            [src]="peli.imagen_url"
+                            [alt]="peli.nombre"
+                            class="poster"
+                        >
+
+                        <div class="info-peli">
+                            <h3>{{ peli.nombre }}</h3>
+
+                            <span class="badge-warning">
+                                Próximamente
+                            </span>
+
+                            <!-- ESTE ES EL CABLE QUE FALTABA -->
+                            <button class="btn-primary" [routerLink]="['/compra', peli.id]" style="margin-top: 1rem; width: 100%; cursor: pointer;">
+                                🎟️ Comprar Preventa
+                            </button>
+                        </div>
+
+                    </div>
+
+                }
+
             </div>
-        
-        }
-    </div>
+
+        </section>
+
+    }
+
 </div>

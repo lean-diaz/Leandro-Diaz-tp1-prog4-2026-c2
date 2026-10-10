@@ -537,3 +537,101 @@
     font-weight: bold;
     margin-top: 10px;
 }
+
+
+
+.ticket-total {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #444;
+}
+
+.aviso-preventa {
+    background-color: #28a745;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+.subtotal-anterior {
+    color: #aaa;
+    text-decoration: line-through;
+    font-size: 0.9rem;
+}
+
+.descuento-preventa {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.ticket-total h3 {
+    margin-bottom: 5px;
+}
+
+.ticket-total .total-destacado {
+    color: #222;
+    margin-top: 5px;
+}
+
+
+
+
+
+
+
+
+.caja-fidelizacion {
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    color: #111;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+.caja-fidelizacion h3 {
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.caja-fidelizacion p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.alerta-puntos {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn-pagar-puntos {
+    background-color: #111;
+    color: #ffd700;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 1.1rem;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-pagar-puntos:hover {
+    background-color: #222;
+    transform: translateY(-2px);
+}
+
+.falta-puntos {
+    margin-top: 10px !important;
+    font-size: 0.85rem !important;
+    color: #444 !important;
+    font-style: italic;
+}

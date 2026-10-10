@@ -35,10 +35,14 @@ export class Compra implements OnInit, OnDestroy {
   descuentoAplicado = signal<number>(0); // Porcentaje (ej: 20)
   cuponAplicado = signal<string | null>(null); // Nombre del cupón
 
+  puntosUsuario = signal<number>(0); // <-- NUEVO
+
+  resenasPelicula = signal<any[]>([]);
+
   // =========================================================
   // 2. CONSTANTES (no cambian nunca, no necesitan ser signals)
   // =========================================================
-  filas: string[] = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'];
+  filas: string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'];
   asientos: number[] = Array.from({ length: 28 }, (_, i) => i + 1);
 
   private readonly FILAS_VIP = ['R', 'S', 'T'];
@@ -51,7 +55,7 @@ export class Compra implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private supabaseService: SupabaseService
-  ) {}
+  ) { }
 
   // =========================================================
   // 3. CICLO DE VIDA
@@ -61,19 +65,31 @@ export class Compra implements OnInit, OnDestroy {
     if (!idUrl) return;
 
     try {
-      const [pelicula, funciones, productos] = await Promise.all([
+      const [pelicula, funciones, productos, resenas] = await Promise.all([
         this.supabaseService.getPeliculaById(idUrl),
         this.supabaseService.getFuncionesDePelicula(idUrl),
-        this.supabaseService.getProductosCandy()
+        this.supabaseService.getProductosCandy(),
+        this.supabaseService.getResenasPelicula(Number(idUrl)) // <-- NUEVA LÍNEA
       ]);
 
       this.peliculaSeleccionada.set(pelicula);
       this.funciones.set(funciones);
       this.productosCandy.set(productos);
+      this.resenasPelicula.set(resenas); // <-- NUEVA LÍNEA
     } catch (error) {
       console.error('Error cargando datos iniciales:', error);
     }
 
+    // Puntos del usuario para el club de beneficios
+    try {
+      const { data: authData } = await this.supabaseService.supabase.auth.getUser();
+      if (authData.user) {
+        const puntos = await this.supabaseService.getPuntosUsuario(authData.user.id);
+        this.puntosUsuario.set(puntos);
+      }
+    } catch (error) {
+      console.error('Error cargando puntos del usuario:', error);
+    }
   }
 
   ngOnDestroy() {
@@ -192,51 +208,66 @@ export class Compra implements OnInit, OnDestroy {
     return this.carritoCandy().filter(p => p.id === productoId).length;
   }
 
+
+  esPreventa = computed(() => {
+    const funcion = this.funcionSeleccionada();
+    if (!funcion) return false;
+
+    const fechaFuncion = new Date(funcion.fecha_hora);
+    if (!Number.isFinite(fechaFuncion.getTime())) return false;
+
+    const diferenciaEnDias =
+      (fechaFuncion.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+
+    return diferenciaEnDias > 7;
+  });
+
   // =========================================================
   // 8. TOTAL (COMPUTED)
   // =========================================================
+
   totalPagar = computed(() => {
     const funcion = this.funcionSeleccionada();
     if (!funcion) return 0;
 
-    let totalParcial = 0;
-    const precioButacaBase = funcion.precio_base;
-    let cantidadButacas = this.butacasSeleccionadas().length;
+    const precioButacaBase = Number(funcion.precio_base);
+    const cantidadButacas = this.butacasSeleccionadas().length;
 
-    // 1. Sumar precio base de todas las butacas seleccionadas
-    totalParcial += (precioButacaBase * cantidadButacas);
+    // 1. Butacas
+    let totalParcial = precioButacaBase * cantidadButacas;
 
-    // 2. Sumar recargos VIP (El combo descuenta la butaca base, pero si elegiste VIP, el recargo lo pagás igual)
+    // 2. Recargo VIP
     for (const asiento of this.butacasSeleccionadas()) {
       if (this.esVIP(asiento.charAt(0))) {
         totalParcial += this.RECARGO_VIP;
       }
     }
 
-    // 3. Procesar el Candy Bar
+    // 3. Candy Bar
     let combosConEntrada = 0;
     for (const item of this.carritoCandy()) {
-      totalParcial += Number(item.precio); // Sumamos el precio del producto/combo
-      
-      // Si el producto incluye entrada, lo contamos
-      if (item.incluye_entrada) {
-        combosConEntrada++;
-      }
+      totalParcial += Number(item.precio);
+      if (item.incluye_entrada) combosConEntrada++;
     }
 
-    // 4. Descontar butacas base (No podemos descontar más butacas de las que seleccionó)
-    const butacasADescontar = Math.min(combosConEntrada, cantidadButacas);
-    totalParcial -= (precioButacaBase * butacasADescontar);
+    // 4. Entradas incluidas en combos
+    totalParcial -= precioButacaBase * Math.min(combosConEntrada, cantidadButacas);
 
-    // 5. Aplicar cupón de descuento (si hay)
-    const porcentaje = this.descuentoAplicado();
-    if (porcentaje > 0) {
-      const montoDescuento = (totalParcial * porcentaje) / 100;
-      totalParcial = totalParcial - montoDescuento;
+    // 5. Cupón
+    const porcentajeCupon = this.descuentoAplicado();
+    if (porcentajeCupon > 0) {
+      totalParcial -= totalParcial * porcentajeCupon / 100;
     }
 
-    return totalParcial;
+    // 6. Preventa
+    if (this.esPreventa()) {
+      totalParcial *= 0.80;
+    }
+
+    return Math.max(0, Math.round(totalParcial * 100) / 100);
   });
+
+
 
   async aplicarDescuento(inputCodigo: string) {
     if (!inputCodigo) return;
@@ -257,7 +288,7 @@ export class Compra implements OnInit, OnDestroy {
   // =========================================================
   // 9. CONFIRMACIÓN Y PAGO
   // =========================================================
-  async finalizarCompra() {
+  async finalizarCompra(metodoPago: 'tarjeta' | 'puntos' = 'tarjeta') {
     const funcion = this.funcionSeleccionada();
     if (!funcion || this.butacasSeleccionadas().length === 0) {
       alert('Elegí una función y al menos una butaca.');
@@ -272,23 +303,23 @@ export class Compra implements OnInit, OnDestroy {
     };
 
     try {
-      const resultado = await this.supabaseService.registrarCompra(paqueteBD);
+      const resultado = await this.supabaseService.registrarCompra(paqueteBD, metodoPago);
 
       if (resultado.exito) {
         // Guardamos el ID del ticket generado
         this.ticketFinalId.set(resultado.ticket.id);
-        
+
         // Limpiamos los carritos
         this.butacasSeleccionadas.set([]);
         this.carritoCandy.set([]);
-        
+
         // ¡Avanzamos a la pantalla del QR!
         this.avanzarPaso(5);
 
       } else {
         // Acá mostramos el mensaje de que le robaron la butaca
         alert(resultado.mensaje);
-        
+
         // Volvemos al paso de selección de butacas para que elija otras
         this.avanzarPaso(2);
       }
@@ -298,5 +329,5 @@ export class Compra implements OnInit, OnDestroy {
     }
   }
 
-  
+
 }

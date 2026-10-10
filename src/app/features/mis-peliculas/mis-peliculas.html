@@ -36,12 +36,24 @@
                 <p class="total">Total pagado: ${{ compra.total_pagado }}</p>
             </div>
 
-            <!-- Mostrar el botón solo si está activa y la peli no empezó -->
-            @if (compra.estado !== 'cancelada') {
-            <div class="ticket-footer">
-                <button class="btn-cancelar" (click)="cancelarCompra(compra)">❌ Cancelar Reserva</button>
-            </div>
+            <!-- LÓGICA DE BOTONES SEGÚN EL TIEMPO -->
+            @if (!esFuncionPasada(compra.funciones.fecha_hora) && compra.estado !== 'cancelada') {
+
+            <button (click)="cancelarCompra(compra)"
+                style="background-color: #dc3545; color: white; border: none; padding: 10px; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px;">
+                ❌ Cancelar Reserva
+            </button>
+
+            } @else if (esFuncionPasada(compra.funciones.fecha_hora) && compra.estado !== 'cancelada') {
+
+            <button (click)="dejarResena(compra)"
+                style="background-color: #ffc107; color: black; border: none; padding: 10px; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px;">
+                ⭐️ Calificar Película
+            </button>
+
             }
+
+
         </div>
         }
     </div>
