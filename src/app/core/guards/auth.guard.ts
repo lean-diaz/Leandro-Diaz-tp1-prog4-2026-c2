@@ -1,16 +1,17 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service'; // Chequeá la ruta
+import { AuthService } from '../services/auth.service';
 
+// decide si pasamos de pantalla
 export const authGuard: CanActivateFn = () => {
-    const auth = inject(AuthService); // Llamamos a nuestro servicio
+    // inyectamos los servicios
+    const auth = inject(AuthService);
     const router = inject(Router);
 
-    // Le preguntamos al Signal: "¿Hay un Pase VIP?"
+    // preguntamos si hay un inicio de sesion, sino lo llevamos a la pantalla principal
     if (auth.session()) {
-        return true; // Adelante, pasá.
+        return true;
     } else {
-        // Si no hay sesión, lo pateamos a la pantalla principal
         return router.parseUrl('/'); 
     }
 };

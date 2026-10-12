@@ -1,39 +1,39 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { SupabaseService } from '../services/supabase'; // Chequeá que la ruta sea correcta
+import { SupabaseService } from '../services/supabase';
 
 export const adminGuard: CanActivateFn = async (route, state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
     const supabaseService = inject(SupabaseService);
 
-    // 1. Si venís navegando por botones, el Signal ya cargó súper rápido y te deja pasar
+    // si el usuario venia navegando, ya tenemos guardado su rol
     if (authService.rol() === 'admin') {
         return true;
     }
 
-    // 2. Si recargaste la página con F5 o entraste por URL, el Signal está vacío.
-    // Frenamos al Guard y le pedimos a Supabase la sesión actual:
+    // al recargar la pagina, le pide a supabase si el navegador tiene un token jwt
     const { data: { session } } = await supabaseService.supabase.auth.getSession();
 
+    // nadie logueado, al inicio
     if (!session?.user) {
-        return router.parseUrl('/'); // Si no hay nadie logueado, lo mandamos al inicio
+        return router.parseUrl('/');
     }
 
-    // 3. Vamos a buscar específicamente el rol a tu tabla 'perfiles'
+    // preguntamos si el usuario logueado es admin en la tabla perfiles
     const { data } = await supabaseService.supabase
         .from('perfiles')
         .select('rol')
         .eq('id', session.user.id)
         .single();
 
+    // si es admin, guardamos en el signal y abrimos la puerta
     if (data && data.rol === 'admin') {
-        // Si efectivamente es admin, guardamos el dato en el Signal y abrimos la puerta
         authService.rol.set('admin');
         return true;
     }
 
-    // Si es un 'cliente' intentando hacerse el vivo, lo mandamos al inicio
+    // lo mandamos al inicio
     return router.parseUrl('/');
 };
