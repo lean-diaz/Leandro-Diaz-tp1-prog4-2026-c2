@@ -10,6 +10,7 @@ import { SupabaseService } from './core/services/supabase';
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
+
 export class App implements OnInit {
   private supabaseService = inject(SupabaseService);
   private router = inject(Router);
@@ -19,9 +20,11 @@ export class App implements OnInit {
   esEmpleado = signal<boolean>(false);
 
   ngOnInit() {
+    // se queda escuchando eventos de Auth de Supabase
     this.supabaseService.supabase.auth.onAuthStateChange(async (event, session) => {
       this.session.set(session);
       
+      // si hay usuario logueado, va 'usuarios' y buscar su rol
       if (session?.user) {
         const { data } = await this.supabaseService.supabase
           .from('usuarios')
@@ -29,7 +32,8 @@ export class App implements OnInit {
           .eq('id', session.user.id)
           .maybeSingle();
 
-        const isAdmin = session.user.email === 'profe@utn.edu.ar' || (data?.es_admin === true);
+        const isAdmin = session.user.email === 'profe@utn.edu.ar' || (data?.es_admin === true); // login del profe
+
         this.esAdmin.set(isAdmin);
         this.esEmpleado.set((data?.es_empleado === true) || isAdmin);
       } else {
@@ -40,6 +44,7 @@ export class App implements OnInit {
   }
 
   async cerrarSesion() {
+    // le avisamos a supabase y nos envia a cartelera
     await this.supabaseService.supabase.auth.signOut();
     this.router.navigate(['/']);
   }
