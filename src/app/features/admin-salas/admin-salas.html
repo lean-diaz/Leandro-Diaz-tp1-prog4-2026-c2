@@ -2,26 +2,26 @@
     <h2>Configuración de la Sala Principal</h2>
     <p class="subtitle">Capacidad total: {{ filas().length * 15 }} espectadores.</p>
 
-    <!-- Leyenda de colores -->
+    <!-- leyenda de colores -->
     <div class="leyenda">
         <div class="item"><div class="asiento-demo normal"></div> Normal</div>
         <div class="item"><div class="asiento-demo vip"></div> VIP (Filas R, S, T)</div>
         <div class="item"><div class="asiento-demo accesible"></div> Accesible (Filas J, K)</div>
     </div>
 
-    <!-- El Mapa -->
+    <!-- el Mapa -->
     <div class="sala-container">
         <div class="pantalla">PANTALLA</div>
         <p class="hint-scroll">↔ Deslizá para ver toda la sala</p>
 
         <div class="grilla-butacas">
-        <!-- Recorremos cada fila -->
+        <!-- recorremos cada fila -->
         @for (fila of filas(); track fila.letra) {
             <div class="fila">
                 <div class="letra-fila">{{ fila.letra }}</div>
             
                 <div class="asientos">
-                    <!-- Recorremos cada asiento de esa fila -->
+                    <!-- recorremos cada asiento de esa fila -->
                     @for (butaca of fila.butacas; track butaca.id) {
                         <div 
                             class="asiento"

@@ -59,7 +59,7 @@ export class AdminMetricas implements OnInit {
       // 3. Apagamos la carga
       this.isLoading = false;
       
-      // 4. EL PELLIZCO: Obligamos a Angular a mostrar el <canvas> en el HTML ahora mismo
+      // 4. Obligamos a Angular a mostrar el <canvas> en el HTML ahora mismo
       this.cdr.detectChanges(); 
 
       // 5. Como el canvas ya existe seguro, dibujamos el gráfico
@@ -123,8 +123,6 @@ export class AdminMetricas implements OnInit {
   }
 
   exportarPDF() {
-    // Usamos el motor nativo del navegador. 
-    // Al usuario le saldrá la opción "Guardar como PDF".
     window.print(); 
   }
 }

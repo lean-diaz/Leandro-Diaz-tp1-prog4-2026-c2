@@ -11,7 +11,7 @@ import { SupabaseService } from '../../core/services/supabase';
 })
 
 export class Home implements OnInit {
-  // Películas separadas por estado
+  // películas separadas por estado
   peliculasCartelera: any[] = [];
   peliculasProximamente: any[] = [];
 
@@ -36,12 +36,12 @@ export class Home implements OnInit {
 
       const peliculas = data ?? [];
 
-      // Películas disponibles en la cartelera
+      // peliculas disponibles
       this.peliculasCartelera = peliculas.filter(
         p => p.estado === 'Cartelera' || !p.estado
       );
 
-      // Películas que se estrenarán próximamente
+      // peliculas proximamente
       this.peliculasProximamente = peliculas.filter(
         p => p.estado === 'Próximamente'
       );

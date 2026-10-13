@@ -2,12 +2,12 @@
     <h2>Catálogo de Películas</h2>
     <p class="subtitle">Gestión de la cartelera y restricciones.</p>
 
-    <!-- BOTÓN PARA ABRIR/CERRAR FORMULARIO -->
+    <!-- abrir / cerrar formulario -->
     <button class="btn-primary btn-programar" (click)="mostrarFormulario.set(!mostrarFormulario())">
         {{ mostrarFormulario() ? 'Cancelar' : '+ Agregar Película' }}
     </button>
 
-    <!-- EL FORMULARIO CRUD -->
+    <!-- crud -->
     @if (mostrarFormulario()) {
     <div class="formulario-admin">
         <h3>Alta de Nueva Película</h3>
@@ -41,7 +41,7 @@
     </div>
     }
 
-    <!-- LA TABLA (Acá va el código de la tabla que ya tenías) -->
+    <!-- la tabla -->
     @if (isLoading()) {
     <div class="loading">Cargando catálogo...</div>
     } @else {

@@ -36,7 +36,7 @@
                 <p class="total">Total pagado: ${{ compra.total_pagado }}</p>
             </div>
 
-            <!-- LÓGICA DE BOTONES SEGÚN EL TIEMPO -->
+            <!-- logica de botones -->
             @if (!esFuncionPasada(compra.funciones.fecha_hora) && compra.estado !== 'cancelada') {
 
             <button (click)="cancelarCompra(compra)"
@@ -52,8 +52,6 @@
             </button>
 
             }
-
-
         </div>
         }
     </div>

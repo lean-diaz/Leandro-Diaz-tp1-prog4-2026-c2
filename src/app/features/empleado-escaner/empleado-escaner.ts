@@ -10,6 +10,7 @@ import { SupabaseService } from '../../core/services/supabase';
   templateUrl: './empleado-escaner.html',
   styleUrls: ['./empleado-escaner.css']
 })
+
 export class EmpleadoEscaner implements OnDestroy {
   @ViewChild('video') videoRef!: ElementRef<HTMLVideoElement>;
 
@@ -35,14 +36,14 @@ export class EmpleadoEscaner implements OnDestroy {
   async iniciarCamara() {
     this.camaraError.set('');
     try {
-      // Pedimos la cámara trasera directamente al celular
+      // pedimos la cámara trasera directamente al celular
       this.stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: 'environment' } },
         audio: false
       });
 
       const video = this.videoRef.nativeElement;
-      video.setAttribute('playsinline', 'true'); // Fundamental para iPhone
+      video.setAttribute('playsinline', 'true');
       video.muted = true;
       video.srcObject = this.stream;
       await video.play();
@@ -64,7 +65,7 @@ export class EmpleadoEscaner implements OnDestroy {
     this.camaraActiva.set(false);
   }
 
-  // Se ejecuta milisegundo a milisegundo buscando el QR en el video
+  // se ejecuta milisegundo a milisegundo buscando el qr en el video
   private escanear = () => {
     if (!this.camaraActiva()) return;
 
@@ -81,16 +82,14 @@ export class EmpleadoEscaner implements OnDestroy {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
         
-        // jsQR hace la magia acá
         const code = jsQR(img.data, img.width, img.height);
 
         if (code && code.data && !this.procesando()) {
           this.procesarQR(code.data);
-          return; // Cortamos el escaneo
+          return; // cortamos el escaneo
         }
       }
     }
-    // Si no encontró nada, pide el siguiente frame
     this.rafId = requestAnimationFrame(this.escanear);
   };
 

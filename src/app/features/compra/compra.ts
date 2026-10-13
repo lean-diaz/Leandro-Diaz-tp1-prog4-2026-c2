@@ -16,9 +16,7 @@ import { HighlightButacaDirective } from '../../shared/directives/highlight-buta
 })
 export class Compra implements OnInit, OnDestroy {
 
-  // =========================================================
-  // 1. ESTADO (SIGNALS)
-  // =========================================================
+  // signals
   peliculaSeleccionada = signal<any>(null);
   funciones = signal<any[]>([]);
   funcionSeleccionada = signal<any>(null);
@@ -32,16 +30,14 @@ export class Compra implements OnInit, OnDestroy {
   productosCandy = signal<any[]>([]);
   carritoCandy = signal<any[]>([]);
 
-  descuentoAplicado = signal<number>(0); // Porcentaje (ej: 20)
-  cuponAplicado = signal<string | null>(null); // Nombre del cupón
+  descuentoAplicado = signal<number>(0);
+  cuponAplicado = signal<string | null>(null);
 
-  puntosUsuario = signal<number>(0); // <-- NUEVO
+  puntosUsuario = signal<number>(0);
 
   resenasPelicula = signal<any[]>([]);
 
-  // =========================================================
-  // 2. CONSTANTES (no cambian nunca, no necesitan ser signals)
-  // =========================================================
+  // constantes
   filas: string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'];
   asientos: number[] = Array.from({ length: 28 }, (_, i) => i + 1);
 
@@ -49,7 +45,7 @@ export class Compra implements OnInit, OnDestroy {
   private readonly FILAS_ACCESIBLES = ['J', 'K'];
   private readonly RECARGO_VIP = 2000;
 
-  // Canal de realtime, para poder cortarlo al cambiar de función o salir
+  // realtime para poder cortarlo al cambiar de función o salir
   private realtimeChannel: any = null;
 
   constructor(
@@ -57,9 +53,7 @@ export class Compra implements OnInit, OnDestroy {
     private supabaseService: SupabaseService
   ) { }
 
-  // =========================================================
-  // 3. CICLO DE VIDA
-  // =========================================================
+  // ciclo de vida
   async ngOnInit() {
     const idUrl = this.route.snapshot.paramMap.get('id');
     if (!idUrl) return;
@@ -69,18 +63,18 @@ export class Compra implements OnInit, OnDestroy {
         this.supabaseService.getPeliculaById(idUrl),
         this.supabaseService.getFuncionesDePelicula(idUrl),
         this.supabaseService.getProductosCandy(),
-        this.supabaseService.getResenasPelicula(Number(idUrl)) // <-- NUEVA LÍNEA
+        this.supabaseService.getResenasPelicula(Number(idUrl))
       ]);
 
       this.peliculaSeleccionada.set(pelicula);
       this.funciones.set(funciones);
       this.productosCandy.set(productos);
-      this.resenasPelicula.set(resenas); // <-- NUEVA LÍNEA
+      this.resenasPelicula.set(resenas);
     } catch (error) {
       console.error('Error cargando datos iniciales:', error);
     }
 
-    // Puntos del usuario para el club de beneficios
+    // puntos del usuario para el club de beneficios
     try {
       const { data: authData } = await this.supabaseService.supabase.auth.getUser();
       if (authData.user) {
@@ -96,23 +90,19 @@ export class Compra implements OnInit, OnDestroy {
     this.cortarRealtime();
   }
 
-  // =========================================================
-  // 4. NAVEGACIÓN
-  // =========================================================
+  // navegacion
   avanzarPaso(nuevoPaso: number) {
     this.pasoActual.set(nuevoPaso);
   }
 
-  // =========================================================
-  // 5. FUNCIÓN (HORARIO) Y BUTACAS
-  // =========================================================
+  // funciones, horarias y butacas
   async seleccionarFuncion(funcion: any) {
     this.funcionSeleccionada.set(funcion);
     this.butacasSeleccionadas.set([]);
     this.butacasOcupadas.set([]);
 
     try {
-      // Butacas ya vendidas SOLO para esta función
+      // butacas ya vendidas SOLO para esta función
       const { data, error } = await this.supabaseService.supabase
         .from('compras')
         .select('butacas')
@@ -120,7 +110,7 @@ export class Compra implements OnInit, OnDestroy {
 
       if (error) throw error;
 
-      // Si mientras esperaba el usuario cambió de horario, descartamos este resultado
+      // si mientras esperaba el usuario cambio de horario, descartamos este resultado
       if (this.funcionSeleccionada()?.id !== funcion.id) return;
 
       this.butacasOcupadas.set((data ?? []).flatMap(compra => compra.butacas));
@@ -132,7 +122,7 @@ export class Compra implements OnInit, OnDestroy {
   }
 
   toggleButaca(idButaca: string) {
-    if (this.butacasOcupadas().includes(idButaca)) return; // seguridad extra
+    if (this.butacasOcupadas().includes(idButaca)) return;
 
     this.butacasSeleccionadas.update(butacas =>
       butacas.includes(idButaca)
@@ -149,11 +139,9 @@ export class Compra implements OnInit, OnDestroy {
     return this.FILAS_ACCESIBLES.includes(fila);
   }
 
-  // =========================================================
-  // 6. REALTIME (WEBSOCKETS)
-  // =========================================================
+  // realtime, websockets
   private iniciarRealtime(funcionId: number) {
-    // Cortamos el canal anterior para que no se acumulen
+    // cortamos el canal anterior para que no se acumulen
     this.cortarRealtime();
 
     this.realtimeChannel = this.supabaseService.supabase
@@ -170,7 +158,7 @@ export class Compra implements OnInit, OnDestroy {
 
           this.butacasOcupadas.update(ocupadas => [...ocupadas, ...butacasNuevas]);
 
-          // Si alguien nos ganó una butaca que teníamos seleccionada, la sacamos
+          // si alguien nos gano una butaca que teniamos seleccionada, la sacamos
           this.butacasSeleccionadas.update(seleccionadas =>
             seleccionadas.filter(b => !butacasNuevas.includes(b))
           );
@@ -186,9 +174,7 @@ export class Compra implements OnInit, OnDestroy {
     }
   }
 
-  // =========================================================
-  // 7. CANDY BAR
-  // =========================================================
+  // candy bar
   agregarAlCandy(producto: any) {
     this.carritoCandy.update(carrito => [...carrito, producto]);
   }
@@ -208,7 +194,6 @@ export class Compra implements OnInit, OnDestroy {
     return this.carritoCandy().filter(p => p.id === productoId).length;
   }
 
-
   esPreventa = computed(() => {
     const funcion = this.funcionSeleccionada();
     if (!funcion) return false;
@@ -222,10 +207,7 @@ export class Compra implements OnInit, OnDestroy {
     return diferenciaEnDias > 7;
   });
 
-  // =========================================================
-  // 8. TOTAL (COMPUTED)
-  // =========================================================
-
+  // total (computed)
   totalPagar = computed(() => {
     const funcion = this.funcionSeleccionada();
     if (!funcion) return 0;
@@ -233,41 +215,39 @@ export class Compra implements OnInit, OnDestroy {
     const precioButacaBase = Number(funcion.precio_base);
     const cantidadButacas = this.butacasSeleccionadas().length;
 
-    // 1. Butacas
+    // butacas
     let totalParcial = precioButacaBase * cantidadButacas;
 
-    // 2. Recargo VIP
+    // recargo vip
     for (const asiento of this.butacasSeleccionadas()) {
       if (this.esVIP(asiento.charAt(0))) {
         totalParcial += this.RECARGO_VIP;
       }
     }
 
-    // 3. Candy Bar
+    // candy bar
     let combosConEntrada = 0;
     for (const item of this.carritoCandy()) {
       totalParcial += Number(item.precio);
       if (item.incluye_entrada) combosConEntrada++;
     }
 
-    // 4. Entradas incluidas en combos
+    // entradas incluidas en combos
     totalParcial -= precioButacaBase * Math.min(combosConEntrada, cantidadButacas);
 
-    // 5. Cupón
+    // cupon
     const porcentajeCupon = this.descuentoAplicado();
     if (porcentajeCupon > 0) {
       totalParcial -= totalParcial * porcentajeCupon / 100;
     }
 
-    // 6. Preventa
+    // preventa
     if (this.esPreventa()) {
       totalParcial *= 0.80;
     }
 
     return Math.max(0, Math.round(totalParcial * 100) / 100);
   });
-
-
 
   async aplicarDescuento(inputCodigo: string) {
     if (!inputCodigo) return;
@@ -285,9 +265,7 @@ export class Compra implements OnInit, OnDestroy {
     }
   }
 
-  // =========================================================
-  // 9. CONFIRMACIÓN Y PAGO
-  // =========================================================
+  // confirmación y pago
   async finalizarCompra(metodoPago: 'tarjeta' | 'puntos' = 'tarjeta') {
     const funcion = this.funcionSeleccionada();
     if (!funcion || this.butacasSeleccionadas().length === 0) {
@@ -306,21 +284,18 @@ export class Compra implements OnInit, OnDestroy {
       const resultado = await this.supabaseService.registrarCompra(paqueteBD, metodoPago);
 
       if (resultado.exito) {
-        // Guardamos el ID del ticket generado
+        // gardamos el id del ticket generado
         this.ticketFinalId.set(resultado.ticket.id);
 
-        // Limpiamos los carritos
+        // limpiamos los carritos
         this.butacasSeleccionadas.set([]);
         this.carritoCandy.set([]);
 
-        // ¡Avanzamos a la pantalla del QR!
+        // avanza al qr
         this.avanzarPaso(5);
 
       } else {
-        // Acá mostramos el mensaje de que le robaron la butaca
         alert(resultado.mensaje);
-
-        // Volvemos al paso de selección de butacas para que elija otras
         this.avanzarPaso(2);
       }
     } catch (error) {
@@ -328,6 +303,4 @@ export class Compra implements OnInit, OnDestroy {
       alert('Hubo un error al procesar el pago. Intentá de nuevo.');
     }
   }
-
-
 }

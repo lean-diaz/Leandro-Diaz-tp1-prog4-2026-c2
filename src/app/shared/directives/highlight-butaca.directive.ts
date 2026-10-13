@@ -1,22 +1,21 @@
 import { Directive, input, computed } from '@angular/core';
 
 @Directive({
-    // El selector entre corchetes significa que se usa como un atributo HTML
     selector: '[appHighlightButaca]',
     standalone: true,
-    // host es la magia de Angular 22: inyecta clases CSS al elemento padre automáticamente
+    // inyecto clases css al elemento padre de manera automatica
     host: {
         '[class.vip]': 'isVip()',
         '[class.accesible]': 'isAccesible()'
     }
 })
 
-export class HighlightButacaDirective {
-
-    // input.required() exige que desde el HTML le pasemos sí o sí la letra (ej: 'T')
+export class HighlightButacaDirective { 
+    // exijo que me pasen la letra de la butaca obligatoriamente
     appHighlightButaca = input.required<string>();
 
-    // Computeds que evalúan la letra. Si devuelven true, el 'host' de arriba aplica la clase CSS
+    // evaluo si corresponde al grupo vip
     isVip = computed(() => ['R', 'S', 'T'].includes(this.appHighlightButaca()));
+    // evaluo si corresponde al grupo accesible
     isAccesible = computed(() => ['J', 'K'].includes(this.appHighlightButaca()));
 }

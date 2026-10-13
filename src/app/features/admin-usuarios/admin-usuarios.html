@@ -15,7 +15,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Recorremos el Signal de usuarios -->
+                <!-- recorremos el signal de usuarios -->
                 @for (u of usuarios(); track u.id) {
                 <tr>
                     <td class="email-cell" data-label="Email">{{ u.email || 'Sin correo registrado' }}</td>

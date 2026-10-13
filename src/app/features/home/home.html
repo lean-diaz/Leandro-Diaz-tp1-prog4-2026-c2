@@ -1,6 +1,6 @@
 <div class="home-container">
 
-    <!-- SECCIÓN: CARTELERA ACTUAL -->
+    <!-- cartelera actual -->
     <h1 class="titulo-cartelera">Cartelera de Cine</h1>
 
     @if (peliculasCartelera.length > 0) {
@@ -31,32 +31,23 @@
     }
 
 
-    <!-- SECCIÓN: PRÓXIMAMENTE -->
+    <!-- proximamente -->
     @if (peliculasProximamente.length > 0) {
 
         <section class="proximamente-section">
-
             <h2>Próximamente en Cines 🍿</h2>
-
             <p class="subtitle">
                 Anticipate a los grandes estrenos.
             </p>
-
             <div class="peliculas-grid">
-
                 @for (peli of peliculasProximamente; track peli.id) {
-
                     <div class="pelicula-card pelicula-proximamente">
-
                         <img
                             [src]="peli.imagen_url"
                             [alt]="peli.nombre"
-                            class="poster"
-                        >
-
+                            class="poster">
                         <div class="info-peli">
                             <h3>{{ peli.nombre }}</h3>
-
                             <span class="badge-warning">
                                 Próximamente
                             </span>
@@ -65,15 +56,9 @@
                                 🎟️ Comprar Preventa
                             </button>
                         </div>
-
                     </div>
-
                 }
-
             </div>
-
         </section>
-
     }
-
 </div>

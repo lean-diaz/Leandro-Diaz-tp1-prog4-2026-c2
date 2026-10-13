@@ -9,6 +9,7 @@ import { SupabaseService } from '../../core/services/supabase';
   templateUrl: './mis-peliculas.html',
   styleUrls: ['./mis-peliculas.css']
 })
+
 export class MisPeliculas implements OnInit {
   private supabaseService = inject(SupabaseService);
 
@@ -17,7 +18,7 @@ export class MisPeliculas implements OnInit {
   usuarioLogueadoId = signal<string | null>(null);
 
   async ngOnInit() {
-    // 1. Verificamos quién está logueado
+    // verificamos quien está logueado
     const { data } = await this.supabaseService.supabase.auth.getUser();
     if (data.user) {
       this.usuarioLogueadoId.set(data.user.id);
@@ -37,7 +38,7 @@ export class MisPeliculas implements OnInit {
     const userId = this.usuarioLogueadoId();
     if (!userId) return;
 
-    // Solo se puede cancelar si no pasó la fecha de la función
+    // solo se puede cancelar si no paso la fecha de la funcion
     const fechaFuncion = new Date(compra.funciones.fecha_hora);
     const ahora = new Date();
     
@@ -66,20 +67,19 @@ export class MisPeliculas implements OnInit {
   }
 
 
-  // 1. HELPER: Averigua si la película ya pasó
+  // averigua si la película ya paso
   esFuncionPasada(fechaHora: string): boolean {
     const fechaFuncion = new Date(fechaHora);
     const ahora = new Date();
     return fechaFuncion < ahora;
   }
 
-  // 2. MÉTODO DE RESEÑA: Usa prompts nativos para hacerlo rápido
+  // crear reseña
   async dejarResena(compra: any) {
     const userId = this.usuarioLogueadoId();
     if (!userId) return;
 
-    // --- EL ARREGLO ESTÁ ACÁ ---
-    // Buscamos el ID de la peli en las diferentes estructuras posibles que devuelve Supabase
+    // buscamos el id de la peli en las diferentes estructuras posibles que devuelve supabase
     const peliculaId = compra.funciones?.peliculas?.id || compra.funciones?.pelicula?.id || compra.funciones?.pelicula_id;
     const peliculaNombre = compra.funciones?.peliculas?.nombre || compra.funciones?.pelicula?.nombre || 'esta película';
     
@@ -89,7 +89,6 @@ export class MisPeliculas implements OnInit {
       alert('Error interno: No se pudo identificar la película para dejar la reseña. Revisá la consola.');
       return;
     }
-    // --------------------------
 
     const estrellasStr = prompt(`Del 1 al 5, ¿cuántas estrellas le darías a ${peliculaNombre}?`);
     if (!estrellasStr) return; 
@@ -112,6 +111,4 @@ export class MisPeliculas implements OnInit {
       alert('Hubo un error al guardar la reseña: ' + resultado.mensaje);
     }
   }
-
-
 }

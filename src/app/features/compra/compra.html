@@ -35,7 +35,7 @@
     </div>
     }
 
-    <!-- OPINIONES (ahora fuera de la grilla) -->
+    <!-- opiniones -->
     <section class="seccion-resenas">
       <h3>Opiniones de los espectadores</h3>
 
@@ -146,7 +146,7 @@
           }
         </ul>
 
-        <!-- SECCIÓN DE CUPÓN AGREGADA ACÁ -->
+        <!-- secciones de cupones -->
         <hr>
         <div class="seccion-cupon">
           <p><strong>¿Tenés un código de descuento?</strong></p>
@@ -193,7 +193,7 @@
 
       </div>
 
-      <!-- CAJA DORADA DE FIDELIZACIÓN -->
+      <!-- caja de fidelizacion -->
       <div class="caja-fidelizacion">
         <h3>⭐️ Club de Beneficios</h3>
         <p>Tenés <strong>{{ puntosUsuario() }}</strong> puntos disponibles (1 punto = $1).</p>
@@ -241,7 +241,6 @@
   </section>
   }
 
-
   @case (5) {
   <section class="panel-exito">
     <div class="tarjeta-qr">
@@ -249,8 +248,7 @@
       <p>Presentá este código en la entrada del cine y en el Candy Bar.</p>
 
       <div class="contenedor-qr">
-        <!-- La librería angularx-qrcode hace la magia acá -->
-        <!-- Convertimos el ID a string porque el QRData pide string -->
+        <!-- convertimos el id a string porque el qrdata pide string -->
         <qrcode [qrdata]="ticketFinalId()?.toString() || ''" [width]="256" [errorCorrectionLevel]="'M'">
         </qrcode>
       </div>
@@ -262,7 +260,6 @@
     </div>
   </section>
   }
-
 
   }
 </main>

@@ -1,5 +1,5 @@
 <div class="admin-layout">
-    <!-- COLUMNA IZQUIERDA: Menú Lateral Fijo -->
+    <!-- Menú Lateral Fijo -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <h3>Panel de Control</h3>
@@ -24,16 +24,15 @@
                 📊 Métricas y Auditoría
             </a>
 
-            <!-- NUEVO ENLACE PARA EL CANDY BAR -->
             <a routerLink="/admin/productos" routerLinkActive="active-link" class="nav-item">
                 🍿 Gestión Candy Bar
             </a>
         </nav>
     </aside>
 
-    <!-- COLUMNA DERECHA: Contenido Dinámico -->
+    <!-- Contenido Dinámico -->
     <main class="admin-content">
-        <!-- Acá es donde Angular va a inyectar 'admin-usuarios', 'admin-peliculas', etc. -->
+        <!-- se inyecta admin-usuarios, admin-peliculas, etc -->
         <router-outlet></router-outlet>
     </main>
 </div>

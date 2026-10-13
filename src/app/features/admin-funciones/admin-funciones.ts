@@ -10,7 +10,9 @@ import { SupabaseService } from '../../core/services/supabase';
   templateUrl: './admin-funciones.html',
   styleUrls: ['./admin-funciones.css']
 })
+
 export class AdminFunciones implements OnInit {
+  // inyecto el servicio de supabase para comunicarme con la base de datos
   private supabaseService = inject(SupabaseService);
 
   funciones = signal<any[]>([]);
@@ -31,6 +33,7 @@ export class AdminFunciones implements OnInit {
     this.cargarDatos();
   }
 
+  // consulto la base de datos para sincronizar funciones y películas al iniciar
   async cargarDatos() {
     this.isLoading.set(true);
 
@@ -50,12 +53,13 @@ export class AdminFunciones implements OnInit {
     this.isLoading.set(false);
   }
 
-  // Convierte un Date a string "YYYY-MM-DDTHH:mm:ss" en hora LOCAL (sin pasar por UTC)
+  // transformo un objeto Date a formato ISO en hora local evitando desfases UTC
   private aLocalISO(d: Date): string {
     const p = (n: number) => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}:00`;
   }
 
+  // realizo un chequeo para evitar cruces de horarios en una misma sala
   async validarSolapamiento(salaId: number, nuevoInicio: Date, nuevoFin: Date): Promise<boolean> {
     const { data: funcionesEnSala } = await this.supabaseService.supabase
       .from('funciones')
@@ -65,39 +69,40 @@ export class AdminFunciones implements OnInit {
     if (!funcionesEnSala) return false;
 
     for (const f of funcionesEnSala) {
-      // Como guardamos sin "Z", JS interpreta estos strings como hora local
       const inicioExistente = new Date(f.fecha_hora);
       const finExistente = new Date(f.fecha_hora_fin);
 
+      // detecto si el intervalo de la nueva función se superpone con una existente
       if (nuevoInicio < finExistente && nuevoFin > inicioExistente) {
-        return true; // CHOCAN
+        return true;
       }
     }
-    return false; // VÍA LIBRE
+    return false;
   }
 
+  // valido los datos, calculo el fin con margen de limpieza y guardo la función
   async guardarFuncion() {
     if (!this.nuevaFuncion.pelicula_id || !this.nuevaFuncion.sala_id || !this.nuevaFuncion.fecha_hora) {
       alert('Por favor, completá todos los campos.');
       return;
     }
 
-    // 1. Buscamos la película (usamos duracion_min, que es lo que traemos de Supabase)
+    // buscamos la película
     const peliSeleccionada = this.peliculas().find(p => p.id === this.nuevaFuncion.pelicula_id);
     const duracion = peliSeleccionada ? Number(peliSeleccionada.duracion_min) : 120;
 
-    // 2. Matemática de fechas en hora local
+    // calculo la hora de finalización sumando la duración y 30 minutos extras de limpieza
     const inicioDate = new Date(this.nuevaFuncion.fecha_hora);
     const finDate = new Date(inicioDate);
     finDate.setMinutes(finDate.getMinutes() + duracion + 30); // duración + 30 min de limpieza
 
-    // Validamos AMBAS fechas
+    // valido ambas fechas
     if (isNaN(inicioDate.getTime()) || isNaN(finDate.getTime())) {
       alert('Error en el cálculo de fechas.');
       return;
     }
 
-    // 3. Validar solapamiento
+    // valido solapamiento
     const salaIdNum = Number(this.nuevaFuncion.sala_id);
     const hayChoque = await this.validarSolapamiento(salaIdNum, inicioDate, finDate);
 
@@ -106,7 +111,7 @@ export class AdminFunciones implements OnInit {
       return;
     }
 
-    // 4. Guardar en Supabase con la hora local exacta
+    // inserto el registro final en la tabla de supabase usando formatos locales
     const { error } = await this.supabaseService.supabase
       .from('funciones')
       .insert({
@@ -122,12 +127,8 @@ export class AdminFunciones implements OnInit {
     } else {
       alert('✅ Función programada con éxito en cartelera.');
       
-      // --- INICIO DEL GRAN HERMANO ---
-      // Sacamos el nombre de la película que buscaste arriba en la línea 81
       const nombrePelicula = peliSeleccionada ? peliSeleccionada.nombre : 'una película';
-      // Mandamos el registro a Supabase
-      await this.supabaseService.registrarAuditoria(`Programó una nueva función para: ${nombrePelicula}`);
-      // --- FIN DEL GRAN HERMANO ---
+      await this.supabaseService.registrarAuditoria(`Programó una nueva función para: ${nombrePelicula}`); // Mandamos el registro a Supabase
 
       this.mostrarFormulario.set(false);
       this.cargarDatos();

@@ -2,15 +2,13 @@
     <header class="admin-header">
         <h2>Gestión de Candy Bar y Combos</h2>
     </header>
-
     <div class="admin-layout">
-
-        <!-- PANEL IZQUIERDO: FORMULARIO -->
+        <!-- formulario -->
         <section class="form-card">
-            <!-- Cambia el título según si hay un ID seleccionado o no -->
+            <!-- cambia el título según si hay un ID seleccionado -->
             <h3>{{ editandoId() ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
 
-            <!-- Conectamos el HTML con el FormGroup del TS -->
+            <!-- conectamos el html con el formgroup -->
             <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()">
 
                 <div class="campo">
@@ -40,28 +38,26 @@
                     </div>
                     <div class="col checkbox-col">
                         <label class="check-label">
-                            <!-- El famoso checkbox que definirá si descontamos la butaca luego -->
+                            <!-- checkbox que define si descontamos la butaca -->
                             <input type="checkbox" formControlName="incluye_entrada">
                             ¿Incluye Entrada?
                         </label>
                     </div>
                 </div>
 
-
-
                 <div class="acciones-form">
                     @if (editandoId()) {
                     <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
                     }
-                    <!-- Se deshabilita si falta llenar algo obligatorio (ej: nombre) -->
+                    <!-- se deshabilita si falta llenar algo obligatorio (ej: nombre) -->
                     <button type="submit" class="btn-guardar" [disabled]="productoForm.invalid">
                         {{ editandoId() ? 'Actualizar' : 'Crear Producto' }}
                     </button>
                 </div>
             </form>
         </section>
-
-        <!-- PANEL DERECHO: GRILLA DE PRODUCTOS -->
+        
+        <!-- grilla de productos -->
         <section class="table-card">
             <table>
                 <thead>
@@ -95,6 +91,5 @@
                 </tbody>
             </table>
         </section>
-
     </div>
 </div>

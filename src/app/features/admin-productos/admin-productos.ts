@@ -10,12 +10,13 @@ import { SupabaseService } from '../../core/services/supabase';
   templateUrl: './admin-productos.html',
   styleUrls: ['./admin-productos.css']
 })
+
 export class AdminProductos implements OnInit {
   productos = signal<any[]>([]);
   productoForm: FormGroup;
   editandoId = signal<number | null>(null);
 
-  // Categorías fijas según el pedido
+  // categorías fijas según el pedido
   categorias = ['Snack', 'Bebida', 'Combo'];
 
   constructor(
@@ -42,7 +43,7 @@ export class AdminProductos implements OnInit {
     this.productos.set(data);
   }
 
-  // Carga los datos de un producto en el formulario para editarlo
+  // carga los datos de un producto en el formulario para editarlo
   editarProducto(producto: any) {
     this.editandoId.set(producto.id);
     this.productoForm.patchValue({

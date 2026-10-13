@@ -2,27 +2,27 @@
     <h2>Programación de Salas</h2>
     <p class="subtitle">Gestión inteligente de horarios (con prevención de solapamientos).</p>
 
-    <!-- Botón para abrir formulario -->
+    <!-- abrir formulario -->
     <button class="btn-primary btn-programar" (click)="mostrarFormulario.set(!mostrarFormulario())">
         {{ mostrarFormulario() ? 'Cancelar' : '+ Programar Función' }}
     </button>
 
-    <!-- EL FORMULARIO -->
+    <!-- el formulario de alta -->
     @if (mostrarFormulario()) {
     <div class="formulario-admin">
         <h3>Nueva Función</h3>
 
         <div class="form-grid">
-            <!-- Selector de Película Dinámico -->
+            <!-- selector dinámico iterando el catálogo de películas -->
             <select [(ngModel)]="nuevaFuncion.pelicula_id" class="input-form">
                 <option value="">Seleccionar Película...</option>
                 @for (p of peliculas(); track p.id) {
-                <!-- El [ngValue] asegura que se pase el número correcto -->
+                <!-- bindeo el identificador único con ngValue -->
                 <option [ngValue]="p.id">{{ p.nombre }} ({{ p.duracion_min }} min)</option>
                 }
             </select>
 
-            <!-- Selector de Sala -->
+            <!-- selector estático para definir el número de sala -->
             <select [(ngModel)]="nuevaFuncion.sala_id" class="input-form">
                 <option value="">Seleccionar Sala...</option>
                 @for (s of salas; track s) {
@@ -30,10 +30,10 @@
                 }
             </select>
 
-            <!-- Selector de Fecha y Hora -->
+            <!-- input nativo para seleccionar fecha y hora local -->
             <input type="datetime-local" [(ngModel)]="nuevaFuncion.fecha_hora" class="input-form">
 
-            <!-- Precio Base -->
+            <!-- campo numérico para fijar el precio base de la función -->
             <input type="number" [(ngModel)]="nuevaFuncion.precio_base" placeholder="Precio Base ($)"
                 class="input-form">
         </div>
@@ -42,7 +42,7 @@
     </div>
     }
 
-    <!-- LA TABLA DE FUNCIONES -->
+    <!-- renderizado condicional según el estado de carga (loading) -->
     @if (isLoading()) {
     <div class="loading">Cargando programación...</div>
     } @else {
@@ -58,6 +58,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- bucle para listar la grilla de funciones programadas aplicando pipes de formato -->
                 @for (f of funciones(); track f.id) {
                 <tr>
                     <td data-label="Sala"><span class="badge">Sala {{ f.sala_id }}</span></td>
