@@ -130,47 +130,81 @@ h2 { color: #e50914; margin-bottom: 0.5rem; }
     .subtitle { font-size: 0.9rem; }
 
     .btn-programar,
-    .formulario-admin .btn-success { width: 100%; }
+    .formulario-admin .btn-success { 
+        width: 100%; 
+        box-sizing: border-box;
+    }
 
     .formulario-admin { padding: 1rem; }
     .form-grid { grid-template-columns: 1fr; }
     .input-form { font-size: 16px; }
 
-    /* Tabla -> tarjetas */
-    .table-responsive { background: transparent; box-shadow: none; overflow-x: visible; }
+    /* Transformación de tabla a tarjetas mobile */
+    .table-responsive { 
+        background: transparent; 
+        box-shadow: none; 
+        overflow-x: hidden; 
+    }
 
     .tabla-admin thead { display: none; }
 
     .tabla-admin,
     .tabla-admin tbody,
-    .tabla-admin tr,
-    .tabla-admin td { display: block; width: 100%; }
+    .tabla-admin tr { 
+        display: block; 
+        width: 100%; 
+        box-sizing: border-box;
+    }
 
     .tabla-admin tr {
         background-color: #1c1c24;
         border-radius: 8px;
         margin-bottom: 12px;
-        padding: 6px 0;
+        padding: 0.8rem;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
     .tabla-admin td {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 0.6rem 1rem;
+        flex-direction: column; /* Apilamos la etiqueta y el dato para evitar desbordes */
+        align-items: flex-start;
+        gap: 4px;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #2a2a35;
+        box-sizing: border-box;
+        width: 100%;
+        text-align: left;
+    }
+
+    .tabla-admin td:last-child {
         border-bottom: none;
-        text-align: right;
+        padding-bottom: 0;
     }
 
     .tabla-admin td::before {
         content: attr(data-label);
         color: #a0a0a0;
-        font-size: 0.8rem;
-        text-align: left;
-        flex-shrink: 0;
+        font-size: 0.75rem;
+        font-weight: bold;
+        text-transform: uppercase;
     }
 
-    .btn-secondary { padding: 0.6rem 1.2rem; }
+    /* Ajuste para el póster e imágenes dentro de la tarjeta */
+    .mini-poster {
+        width: 50px;
+        height: 75px;
+        margin-top: 4px;
+    }
+
+    .resaltado {
+        font-size: 1rem;
+        word-break: break-word;
+    }
+
+    .btn-secondary { 
+        width: 100%;
+        padding: 0.6rem; 
+        box-sizing: border-box;
+        margin-top: 0.4rem;
+    }
 }

@@ -61,7 +61,8 @@
 .admin-content {
     padding: 1.5rem;
     overflow-y: auto;
-    min-width: 0; /* evita que tablas anchas estiren la grilla */
+    min-width: 0;
+    /* evita que tablas anchas estiren la grilla */
 }
 
 .nav-item {
@@ -77,47 +78,62 @@
 
 @media (max-width: 850px) {
     .admin-layout {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
     }
 
     .sidebar {
-        padding: 0;
-        border-right: none;
-        border-bottom: 1px solid #2a2a35;
+        width: 100% !important;
+        max-width: 100vw !important;
+        padding: 0 !important;
+        border-right: none !important;
+        border-bottom: 1px solid #2a2a35 !important;
+        background-color: #141419 !important;
     }
 
     .sidebar-header {
-        display: none;
+        display: none !important;
     }
 
-    /* Menú en franja horizontal con scroll */
+    /* Menú en franja horizontal con scroll táctil continuo */
     .sidebar-nav {
-        flex-direction: row;
-        overflow-x: auto;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        /* Firefox */
     }
 
     .sidebar-nav::-webkit-scrollbar {
         display: none;
+        /* Chrome, Safari, Opera */
     }
 
     .nav-item {
-        flex: 0 0 auto;
-        white-space: nowrap;
-        padding: 0.9rem 1rem;
-        font-size: 0.9rem;
-        border-left: none;
-        border-bottom: 3px solid transparent;
-    }
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    padding: 0.5rem 0.6rem !important; /* Menos espacio entre texto e íconos */
+    font-size: 0.78rem !important;      /* Texto ligeramente más compacto */
+}
 
     .active-link {
-        border-left: none;
-        border-bottom: 3px solid #e50914;
+        border-left: none !important;
+        border-bottom: 3px solid #e50914 !important;
+        font-weight: bold !important;
     }
 
     .admin-content {
-        padding: 0.8rem;
+        padding: 0.8rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 }

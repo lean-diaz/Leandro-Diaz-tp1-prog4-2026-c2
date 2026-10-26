@@ -188,61 +188,116 @@ th {
     .admin-container { padding: 0; }
     .admin-header h2 { font-size: 1.3rem; }
 
-    .admin-layout { grid-template-columns: minmax(0, 1fr); }
+    .admin-layout { 
+        grid-template-columns: 1fr !important;
+        gap: 15px;
+    }
 
-    .form-card { padding: 16px; }
+    /* 1. Ajuste del Formulario en Mobile */
+    .form-card { padding: 1rem !important; }
+
+    .campo.row {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .checkbox-col {
+        justify-content: flex-start !important;
+        padding-bottom: 0 !important;
+        margin-top: 4px;
+    }
 
     .campo input[type="text"],
     .campo input[type="number"],
-    .campo select { font-size: 16px; }
+    .campo select { 
+        font-size: 16px !important; 
+        box-sizing: border-box !important;
+        width: 100% !important;
+    }
 
-    .campo.row { gap: 10px; }
+    .acciones-form {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
 
-    /* Tabla -> tarjetas */
-    .table-card { background: transparent; border: none; padding: 0; }
+    .btn-guardar,
+    .btn-cancelar {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
 
-    .table-card thead { display: none; }
+    /* 2. Transformación de Tabla a Tarjetas Verticales */
+    .table-card { 
+        background: transparent !important; 
+        border: none !important; 
+        padding: 0 !important; 
+    }
+
+    .table-card thead { display: none !important; }
 
     .table-card table,
     .table-card tbody,
-    .table-card tr,
-    .table-card td { display: block; width: 100%; }
+    .table-card tr { 
+        display: block !important; 
+        width: 100% !important; 
+        box-sizing: border-box !important;
+    }
 
     .table-card tr {
-        background: #1e1e1e;
-        border: 1px solid #333;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        padding: 6px 0;
+        background: #1e1e1e !important;
+        border: 1px solid #333 !important;
+        border-radius: 8px !important;
+        margin-bottom: 12px !important;
+        padding: 0.8rem !important;
     }
 
     .table-card td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 8px 14px;
-        border-bottom: none;
-        text-align: right;
+        display: flex !important;
+        flex-direction: column !important; /* Apilamos para evitar desbordes */
+        align-items: flex-start !important;
+        gap: 4px !important;
+        padding: 0.5rem 0 !important;
+        border-bottom: 1px solid #2a2a2a !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        text-align: left !important;
+    }
+
+    .table-card td:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
     }
 
     .table-card td::before {
         content: attr(data-label);
         color: #aaa;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        font-weight: bold;
         text-transform: uppercase;
-        text-align: left;
-        flex-shrink: 0;
     }
 
-    .table-card td.empty-state { justify-content: center; text-align: center; }
-    .table-card td.empty-state::before { content: none; }
+    .table-card td.empty-state { 
+        justify-content: center !important; 
+        text-align: center !important; 
+    }
+    
+    .table-card td.empty-state::before { content: none !important; }
 
-    .acciones-tabla { justify-content: flex-end; }
+    /* Acciones con botones al 100% o en fila clara */
+    .acciones-tabla { 
+        display: flex !important;
+        gap: 10px !important;
+        width: 100% !important;
+        margin-top: 4px !important;
+    }
 
     .btn-editar, .btn-eliminar {
-        background: #2a2a2a;
-        padding: 10px 14px;
-        font-size: 1.3em;
+        flex: 1 !important;
+        background: #2a2a2a !important;
+        padding: 8px !important;
+        font-size: 1.1em !important;
+        text-align: center !important;
+        border-radius: 4px !important;
     }
 }
+

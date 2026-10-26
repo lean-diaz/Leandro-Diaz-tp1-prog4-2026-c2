@@ -151,7 +151,7 @@ export class Compra implements OnInit, OnDestroy {
         { event: 'INSERT', schema: 'public', table: 'compras' },
         (payload: any) => {
           const nuevaCompra = payload.new;
-
+  
           if (String(nuevaCompra['funcion_id']) !== String(funcionId)) return;
 
           const butacasNuevas: string[] = nuevaCompra['butacas'] ?? [];

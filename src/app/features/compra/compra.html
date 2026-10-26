@@ -68,23 +68,26 @@
     <div class="pantalla-cine">PANTALLA</div>
     <p class="hint-scroll">↔ Deslizá para ver toda la sala</p>
 
-    <div class="mapa-sala">
-      @for (fila of filas; track fila) {
-      <div class="fila-butacas">
-        <span class="letra-fila">{{ fila }}</span>
+    <!-- Envolvemos la grilla en este wrapper -->
+    <div class="wrapper-mapa">
+      <div class="mapa-sala">
+        @for (fila of filas; track fila) {
+        <div class="fila-butacas">
+          <span class="letra-fila">{{ fila }}</span>
 
-        @for (asiento of asientos; track asiento) {
-        <button class="butaca" [class.seleccionada]="butacasSeleccionadas().includes(fila + asiento)"
-          [class.ocupada]="butacasOcupadas().includes(fila + asiento)"
-          [disabled]="butacasOcupadas().includes(fila + asiento)" [appHighlightButaca]="fila"
-          (click)="toggleButaca(fila + asiento)">
-          {{ asiento }}
-        </button>
+          @for (asiento of asientos; track asiento) {
+          <button class="butaca" [class.seleccionada]="butacasSeleccionadas().includes(fila + asiento)"
+            [class.ocupada]="butacasOcupadas().includes(fila + asiento)"
+            [disabled]="butacasOcupadas().includes(fila + asiento)" [appHighlightButaca]="fila"
+            (click)="toggleButaca(fila + asiento)">
+            {{ asiento }}
+          </button>
+          }
+
+          <span class="letra-fila">{{ fila }}</span>
+        </div>
         }
-
-        <span class="letra-fila">{{ fila }}</span>
       </div>
-      }
     </div>
 
     <div class="resumen-compra">

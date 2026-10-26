@@ -1,25 +1,28 @@
 <nav class="navbar">
-    <div class="nav-brand" routerLink="/">🍿 CINE UTN</div>
+    <div class="nav-container">
+        <div class="nav-brand" routerLink="/">🍿 CINE UTN</div>
 
-    <div class="nav-links">
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Cartelera</a>
+        <div class="nav-links">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Cartelera</a>
 
-        @if (session()) {
-        <a routerLink="/mis-peliculas" routerLinkActive="active">Mis Entradas</a>
+            @if (session()) {
+            <a routerLink="/mis-peliculas" routerLinkActive="active">Mis Entradas</a>
+            }
 
-        @if (esEmpleado()) {
-        <a routerLink="/escaner" routerLinkActive="active">📷 Escáner QR</a>
-        }
+            @if (esEmpleado()) {
+            <a routerLink="/escaner" routerLinkActive="active">📷 Escáner QR</a>
+            }
 
-        @if (esAdmin()) {
-        <!-- Ajustá estas rutas a las de tu panel de admin -->
-        <a routerLink="/admin" routerLinkActive="active">⚙️ Panel Admin</a>
-        }
+            @if (esAdmin()) {
+            <a routerLink="/admin" routerLinkActive="active">⚙️ Panel Admin</a>
+            }
 
-        <button class="btn-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
-        } @else {
-        <a routerLink="/login" class="btn-login" routerLinkActive="active">Iniciar Sesión</a>
-        }
+            @if (session()) {
+            <button class="btn-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
+            } @else {
+            <a routerLink="/login" class="btn-login" routerLinkActive="active">Iniciar Sesión</a>
+            }
+        </div>
     </div>
 </nav>
 
